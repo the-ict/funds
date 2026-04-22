@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d mydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/mydb?schema=public
+      UZBEK_VOICE_API_KEY: 6de6e77e-330c-4620-bf83-878e0a28e053:92c5ae75-47eb-497d-80ab-bf40cc0f6cc7
+      DEEPSEEK_API_KEY: sk-11b7ecd19a3647d78ed4fbf2bd92b0be
+      UZBEK_VOICE_API_BASE_URL: https://uzbekvoice.ai/api
+      DEEPSEEK_API_BASE_URL: https://api.deepseek.com
+      JWT_SECRET: dfadsnfpasnfpoaindpfmpoqm221=3uka
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/mydb?schema=public
+      BOT_TOKEN: 8766157951:AAHAVcp21pB8GQwO7hNceEQemQdReskUFJ4
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    ports:
+      - "3001:3000"
+    depends_on:
+      backend:
+        condition: service_started
+
+volumes:
+  postgres_data:
