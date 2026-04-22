@@ -1,10 +1,10 @@
-import "dotenv/config";
-import { Telegraf } from "telegraf";
-import { BotContext } from "./types";
-import { antiSpamMiddleware } from "./middlewares/anti-spam.middleware";
-import { errorMiddleware } from "./middlewares/error.middleware";
-import { sessionMiddleware } from "./middlewares/session.middleware";
+// i should integrate with backend voice input processing route
+// then i have to filter messages
+
 import { validationMiddleware } from "./middlewares/validation.middleware";
+import { antiSpamMiddleware } from "./middlewares/anti-spam.middleware";
+import { sessionMiddleware } from "./middlewares/session.middleware";
+import { errorMiddleware } from "./middlewares/error.middleware";
 import { startHandler } from "./handlers/start.handler";
 import {
   confirmRegistrationHandler,
@@ -12,6 +12,9 @@ import {
   registrationActionData,
   restartRegistrationHandler,
 } from "./handlers/register.handler";
+import { BotContext } from "./types";
+import { Telegraf } from "telegraf";
+import "dotenv/config";
 
 const botToken = process.env.BOT_TOKEN;
 
@@ -21,10 +24,10 @@ if (!botToken) {
 
 const bot = new Telegraf<BotContext>(botToken);
 
-bot.use(errorMiddleware());
+bot.use(validationMiddleware());
 bot.use(antiSpamMiddleware());
 bot.use(sessionMiddleware());
-bot.use(validationMiddleware());
+bot.use(errorMiddleware());
 
 bot.start(startHandler());
 bot.on(["text", "contact"], registerMessageHandler());

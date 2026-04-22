@@ -1,6 +1,6 @@
 import { Context } from "telegraf";
 
-export type RegistrationStep = "name" | "phone" | "confirm";
+export type RegistrationStep = "name" | "phone" | "confirm" | "done";
 
 export interface SessionState {
   step: RegistrationStep;
