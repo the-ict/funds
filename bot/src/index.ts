@@ -1,6 +1,3 @@
-// i should integrate with backend voice input processing route
-// then i have to filter messages
-
 import { validationMiddleware } from "./middlewares/validation.middleware";
 import { antiSpamMiddleware } from "./middlewares/anti-spam.middleware";
 import { sessionMiddleware } from "./middlewares/session.middleware";
@@ -12,7 +9,11 @@ import {
   registrationActionData,
   restartRegistrationHandler,
 } from "./handlers/register.handler";
-import { transactionMessageHandler } from "./handlers/transaction.handler";
+import {
+  DELETE_TRANSACTION_PREFIX,
+  deleteTransactionHandler,
+  transactionMessageHandler,
+} from "./handlers/transaction.handler";
 import { BotContext } from "./types";
 import { Telegraf } from "telegraf";
 import "dotenv/config";
@@ -35,6 +36,7 @@ bot.on(["text", "contact"], registerMessageHandler());
 bot.on(["text", "voice"], transactionMessageHandler());
 bot.action(registrationActionData.confirm, confirmRegistrationHandler());
 bot.action(registrationActionData.restart, restartRegistrationHandler());
+bot.action(new RegExp(`^${DELETE_TRANSACTION_PREFIX}.+`), deleteTransactionHandler());
 
 bot.launch().then(() => {
   console.log("Bot ishga tushdi");

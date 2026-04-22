@@ -1,4 +1,4 @@
-import { MiddlewareFn } from "telegraf";
+import { MiddlewareFn, Markup } from "telegraf";
 import { BotContext } from "../types";
 import { parseTransactionMessage } from "../utils/transaction.util";
 
@@ -22,7 +22,33 @@ const buildReply = (transaction: {
   )} UZS\n📅 Sana: ${date}${noteLine}\n\n🆔 ID: \`${transaction.id.slice(0, 8)}\``;
 };
 
+export const DELETE_TRANSACTION_PREFIX = "delete_tx:";
+
 const processingUsers = new Set<string>();
+
+export const deleteTransactionHandler = () => async (ctx: BotContext) => {
+  if (!("callback_query" in ctx.update) || !("data" in ctx.update.callback_query)) return;
+
+  const callbackData = ctx.update.callback_query.data;
+  const transactionId = callbackData.replace(DELETE_TRANSACTION_PREFIX, "");
+
+  try {
+    const response = await fetch(`http://localhost:3000/transactions/${transactionId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      await ctx.answerCbQuery("O'chirishda xatolik yuz berdi ❌");
+      return;
+    }
+
+    await ctx.answerCbQuery("O'chirildi ✅");
+    await ctx.editMessageText("🗑 Bu tranzaksiya o'chirildi.");
+  } catch (error) {
+    console.error("Delete transaction error:", error);
+    await ctx.answerCbQuery("Xatolik yuz berdi ❌");
+  }
+};
 
 export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (ctx, next) => {
   if (ctx.session) {
@@ -131,7 +157,12 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
         createdAt: string;
       };
 
-      await ctx.reply(buildReply(transaction), { parse_mode: "Markdown" });
+      await ctx.reply(buildReply(transaction), {
+        parse_mode: "Markdown",
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback("🗑 O'chirish", `${DELETE_TRANSACTION_PREFIX}${transaction.id}`)],
+        ]),
+      });
     } catch (error) {
       console.error("Transaction creation error:", error);
       await ctx.reply("❌ Xatolik yuz berdi. Ma'lumotlarni saqlash imkoni bo'lmadi.");
@@ -142,9 +173,7 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
       try {
         await ctx.deleteMessage(loadingMessageId);
       } catch (e) {
-        throw new Error("FAILED_TO_DELETE_LOADING_MESSAGE", {
-          cause: e,
-        });
+        throw new Error("FAILED_TO_DELETE_LOADING_MESSAGE");
       }
     }
   }
