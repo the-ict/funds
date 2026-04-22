@@ -17,6 +17,7 @@ export const validationMiddleware = (): MiddlewareFn<BotContext> => async (ctx, 
   delete state.validatedName;
   delete state.validatedPhone;
   delete state.contactOwnerMismatch;
+  delete state.unsupportedPhoneInput;
 
   if (ctx.session.step === "name" && ctx.message && "text" in ctx.message) {
     state.validatedName = validateFullName(ctx.message.text);
@@ -24,8 +25,10 @@ export const validationMiddleware = (): MiddlewareFn<BotContext> => async (ctx, 
 
   if (ctx.session.step === "phone" && ctx.message) {
     let rawPhone: string | null = null;
+    let hasAcceptedPayload = false;
 
     if ("contact" in ctx.message) {
+      hasAcceptedPayload = true;
       const contact = ctx.message.contact;
       if (contact.user_id && ctx.from && contact.user_id !== ctx.from.id) {
         state.contactOwnerMismatch = true;
@@ -35,7 +38,12 @@ export const validationMiddleware = (): MiddlewareFn<BotContext> => async (ctx, 
     }
 
     if ("text" in ctx.message) {
+      hasAcceptedPayload = true;
       rawPhone = ctx.message.text;
+    }
+
+    if (!hasAcceptedPayload) {
+      state.unsupportedPhoneInput = true;
     }
 
     const normalized = rawPhone ? normalizePhone(rawPhone) : null;

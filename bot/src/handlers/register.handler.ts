@@ -1,6 +1,5 @@
 import { Markup } from "telegraf";
 import { BotContext } from "../types";
-import { UserService, mapPrismaUserCreateError } from "../services/user.service";
 
 const CONFIRM_DATA = "registration_confirm";
 const RESTART_DATA = "registration_restart";
@@ -17,18 +16,17 @@ const confirmKeyboard = Markup.inlineKeyboard([
 ]);
 
 const summaryText = (name: string, phone: string, username: string): string => `📋 Ma’lumotlaringiz:
+
 👤 Ism: ${name}
+
 📱 Telefon: ${phone}
+
 🔗 Username: ${username}`;
 
 
 export const registerMessageHandler = () => async (ctx: BotContext) => {
   const session = ctx.session;
-  const state = ctx.state as {
-    validatedName?: string | null;
-    validatedPhone?: string | null;
-    contactOwnerMismatch?: boolean;
-  };
+  const state = ctx.state;
 
   if (!session) {
     if (ctx.message && "text" in ctx.message && !ctx.message.text.startsWith("/")) {
@@ -65,6 +63,13 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
   }
 
   if (session.step === "phone") {
+    if (state.unsupportedPhoneInput) {
+      await ctx.reply(
+        "Telefon bosqichida faqat raqamni matn ko‘rinishida yoki kontakt tugmasi orqali yuborishingiz mumkin.",
+        phoneKeyboard,
+      );
+      return;
+    }
     if (state.contactOwnerMismatch) {
       await ctx.reply(
         "Iltimos, faqat o‘zingizga tegishli telefon raqamni ulashing yoki qo‘lda kiriting.",
@@ -102,7 +107,7 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
   }
 };
 
-export const confirmRegistrationHandler = (userService: UserService) => async (ctx: BotContext) => {
+export const confirmRegistrationHandler = () => async (ctx: BotContext) => {
   if (!ctx.session || !ctx.from) {
     await ctx.answerCbQuery("Avval /start buyrug‘ini yuboring.");
     return;
@@ -116,55 +121,12 @@ export const confirmRegistrationHandler = (userService: UserService) => async (c
     return;
   }
 
-  try {
-    const tgId = String(ctx.from.id);
-    const username = ctx.from.username ?? "username yo‘q";
-
-    await userService.createUser({
-      name,
-      phone,
-      tgId,
-      tgUsername: username,
-    });
-
-    ctx.clearSession();
-    await ctx.answerCbQuery("Tasdiqlandi ✅");
-    await ctx.reply("Tabriklaymiz! Siz muvaffaqiyatli ro‘yxatdan o‘tdingiz ✅");
-    return;
-  } catch (error) {
-    const errorType = mapPrismaUserCreateError(error);
-
-    if (errorType === "tg_id_exists") {
-      ctx.clearSession();
-      await ctx.answerCbQuery();
-      await ctx.reply("Siz allaqachon ro‘yxatdan o‘tgansiz ✅");
-      return;
-    }
-
-    if (errorType === "phone_exists") {
-      ctx.setSession({
-        step: "phone",
-        data: {
-          name,
-        },
-      });
-      await ctx.answerCbQuery();
-      await ctx.reply(
-        "Bu telefon raqam avval ro‘yxatdan o‘tgan. Iltimos, boshqa raqam kiriting:",
-        phoneKeyboard,
-      );
-      return;
-    }
-
-    if (errorType === "username_exists") {
-      ctx.clearSession();
-      await ctx.answerCbQuery();
-      await ctx.reply("Bu Telegram akkaunt ma’lumoti bilan ro‘yxatdan o‘tishda muammo bor. Iltimos, /start bilan qayta urinib ko‘ring.");
-      return;
-    }
-
-    throw error;
-  }
+  ctx.clearSession();
+  await ctx.answerCbQuery("Tasdiqlandi ✅");
+  await ctx.reply(
+    "Ajoyib! Ma’lumotlaringiz qabul qilindi ✅\nKerak bo‘lsa /start orqali qaytadan boshlashingiz mumkin.",
+    Markup.removeKeyboard(),
+  );
 };
 
 export const restartRegistrationHandler = () => async (ctx: BotContext) => {
