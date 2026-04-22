@@ -7,7 +7,7 @@ const openai = new OpenAI({
 });
 
 class DeepSeekService {
-    async getResponse(prompt: string) {
+    async getResponse(prompt: string, tg_id: string) {
         try {
             const response = await openai.chat.completions.create({
                 model: "deepseek-chat",
