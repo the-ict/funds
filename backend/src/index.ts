@@ -15,6 +15,7 @@ import cors from "cors";
 import transactionsRouter from "./routers/transactions.route";
 import categoriesRouter from "./routers/categories.route";
 import usersRouter from "./routers/users.route";
+import uzbekVoiceRouter from "./routers/uzbekvoice.route";
 
 // configure dotenv
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/categories', categoriesRouter);
 app.use('/transactions', transactionsRouter);
+app.use('/voice', uzbekVoiceRouter);
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Working !");
