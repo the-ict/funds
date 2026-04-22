@@ -6,4 +6,3 @@
 // The user should be able to delete the transaction they just added.
 // The system offers many categories to choose from, but the user can also add a new category if they want to.
 // The bot should be able to understand the ambigious input and ask for clarification if needed or make a guess based on the context of the conversation and previous interactions 
-// 
