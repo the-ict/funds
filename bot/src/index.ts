@@ -9,11 +9,7 @@ import {
   registrationActionData,
   restartRegistrationHandler,
 } from "./handlers/register.handler";
-import {
-  DELETE_TRANSACTION_PREFIX,
-  deleteTransactionHandler,
-  transactionMessageHandler,
-} from "./handlers/transaction.handler";
+import { transactionMessageHandler } from "./handlers/transaction.handler";
 import { BotContext } from "./types";
 import { Telegraf } from "telegraf";
 import "dotenv/config";
@@ -36,7 +32,6 @@ bot.on(["text", "contact"], registerMessageHandler());
 bot.on(["text", "voice"], transactionMessageHandler());
 bot.action(registrationActionData.confirm, confirmRegistrationHandler());
 bot.action(registrationActionData.restart, restartRegistrationHandler());
-bot.action(new RegExp(`^${DELETE_TRANSACTION_PREFIX}.+`), deleteTransactionHandler());
 
 bot.launch().then(() => {
   console.log("Bot ishga tushdi");

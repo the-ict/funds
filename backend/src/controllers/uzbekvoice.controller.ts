@@ -1,7 +1,6 @@
-import type { Request, Response } from 'express';
-import type { Express } from 'express';
 import uzbekVoiceService from '../services/uzbekvoice.service.js';
 import deepseekService from '../services/deepseek.service.js';
+import type { Request, Response } from 'express';
 import logger from '../utils/loggers.js';
 import fs from 'fs';
 
@@ -65,10 +64,10 @@ export const processTextInput = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'tg_id is required' });
     }
 
-    const response = await deepseekService.getResponse(text, tg_id);
-    res.json(response);
+    const response = await deepseekService.getResponse(text, tg_id.toString());
+    res.json({ text, response });
   } catch (error) {
-    logger.error('Failed to process text input', { error });
-    res.status(500).json({ error: 'Failed to process text input' });
+    logger.error("Failed to process text input", { error });
+    res.status(500).json({ error: "Failed to process text input" });
   }
 };

@@ -37,8 +37,11 @@ export const startHandler = () => async (ctx: BotContext) => {
     }
   } catch (error: any) {
     if (error.response?.status === 404) {
+      // User not found, proceed to registration
     } else {
       console.error("Error checking user status:", error.message);
+      await ctx.reply("Bog'lanishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.");
+      return;
     }
   }
 
