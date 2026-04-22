@@ -29,9 +29,6 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
   const state = ctx.state;
 
   if (!session) {
-    if (ctx.message && "text" in ctx.message && !ctx.message.text.startsWith("/")) {
-      await ctx.reply("Ro‘yxatdan o‘tishni boshlash uchun /start buyrug‘ini yuboring.");
-    }
     return;
   }
 

@@ -1,4 +1,4 @@
-interface ISpeechToTextResponse{
+interface ISpeechToTextResponse {
     id: string;
     result: {
         text: string;

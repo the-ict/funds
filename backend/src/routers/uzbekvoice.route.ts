@@ -1,4 +1,4 @@
-import { processVoiceInput } from '../controllers/uzbekvoice.controller';
+import { processTextInput, processVoiceInput } from '../controllers/uzbekvoice.controller';
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
@@ -40,5 +40,6 @@ const upload = multer({
 });
 
 router.post('/', upload.single('audio'), processVoiceInput as any);
+router.post('/text', processTextInput);
 
 export default router;

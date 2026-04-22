@@ -1,4 +1,5 @@
 import { Context } from "telegraf";
+import { ParsedTransaction } from "../utils/transaction.util";
 
 export type RegistrationStep = "name" | "phone" | "confirm" | "done";
 
@@ -15,6 +16,8 @@ export interface ValidationState {
   validatedPhone?: string | null;
   contactOwnerMismatch?: boolean;
   unsupportedPhoneInput?: boolean;
+  voiceTranscript?: string;
+  parsedTransaction?: ParsedTransaction;
 }
 
 export interface BotContext extends Context {

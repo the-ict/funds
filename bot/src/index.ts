@@ -12,6 +12,7 @@ import {
   registrationActionData,
   restartRegistrationHandler,
 } from "./handlers/register.handler";
+import { transactionMessageHandler } from "./handlers/transaction.handler";
 import { BotContext } from "./types";
 import { Telegraf } from "telegraf";
 import "dotenv/config";
@@ -31,6 +32,7 @@ bot.use(errorMiddleware());
 
 bot.start(startHandler());
 bot.on(["text", "contact"], registerMessageHandler());
+bot.on(["text", "voice"], transactionMessageHandler());
 bot.action(registrationActionData.confirm, confirmRegistrationHandler());
 bot.action(registrationActionData.restart, restartRegistrationHandler());
 

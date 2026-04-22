@@ -53,3 +53,22 @@ export const processVoiceInput = async (req: MulterRequest, res: Response) => {
     res.status(500).json({ error: 'Failed to process voice input' });
   }
 };
+
+
+export const processTextInput = async (req: Request, res: Response) => {
+  try {
+    const { text, tg_id } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: 'No text provided' });
+    }
+    if (!tg_id) {
+      return res.status(400).json({ error: 'tg_id is required' });
+    }
+
+    const response = await deepseekService.getResponse(text, tg_id);
+    res.json(response);
+  } catch (error) {
+    logger.error('Failed to process text input', { error });
+    res.status(500).json({ error: 'Failed to process text input' });
+  }
+};
