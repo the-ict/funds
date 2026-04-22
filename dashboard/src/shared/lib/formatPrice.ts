@@ -1,5 +1,5 @@
 import { LanguageRoutes } from '../config/i18n/types';
-import { getLocale } from 'next-intl/server';
+import getLocaleCS from './getLocaleCS';
 
 /**
  * Format price. With label.
@@ -8,7 +8,7 @@ import { getLocale } from 'next-intl/server';
  * @returns string. Ex. X XXX XXX sum
  */
 const formatPrice = async (amount: number | string, withLabel?: boolean) => {
-  const locale = (await getLocale()) as LanguageRoutes;
+  const locale = getLocaleCS() || LanguageRoutes.UZ;
   const label = withLabel
     ? locale == LanguageRoutes.RU
       ? ' сум'

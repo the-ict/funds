@@ -1,6 +1,5 @@
 import getLocaleCS from '@/shared/lib/getLocaleCS';
 import axios from 'axios';
-import { getLocale } from 'next-intl/server';
 import { LanguageRoutes } from '../i18n/types';
 import { BASE_URL } from './URLs';
 
@@ -14,13 +13,7 @@ httpClient.interceptors.request.use(
     console.log(`API REQUEST to ${config.url}`, config);
 
     // Language configs
-    let language = LanguageRoutes.UZ;
-    try {
-      language = (await getLocale()) as LanguageRoutes;
-    } catch (e) {
-      console.log('error', e);
-      language = getLocaleCS() || LanguageRoutes.UZ;
-    }
+    const language = getLocaleCS() || LanguageRoutes.UZ;
 
     config.headers['Accept-Language'] = language;
     // const accessToken = localStorage.getItem('accessToken');

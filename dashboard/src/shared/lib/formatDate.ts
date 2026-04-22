@@ -4,7 +4,7 @@ import 'dayjs/locale/uz';
 import 'dayjs/locale/ru';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { getLocale } from 'next-intl/server';
+import getLocaleCS from './getLocaleCS';
 
 // Install Dayjs plugins
 dayjs.extend(localizedFormat);
@@ -12,7 +12,7 @@ dayjs.extend(relativeTime);
 
 // Find locale
 const getCurrentLocale = async () => {
-  const locale = await getLocale();
+  const locale = getLocaleCS() || 'uz';
   switch (locale) {
     case 'ki':
       return 'uz';
