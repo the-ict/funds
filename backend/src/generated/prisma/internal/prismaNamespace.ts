@@ -387,7 +387,8 @@ export const ModelName = {
   User: 'User',
   Categories: 'Categories',
   Transaction: 'Transaction',
-  Chat: 'Chat'
+  Chat: 'Chat',
+  Verify: 'Verify'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "categories" | "transaction" | "chat"
+    modelProps: "user" | "categories" | "transaction" | "chat" | "verify"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Verify: {
+      payload: Prisma.$VerifyPayload<ExtArgs>
+      fields: Prisma.VerifyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerifyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerifyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>
+        }
+        findFirst: {
+          args: Prisma.VerifyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerifyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>
+        }
+        findMany: {
+          args: Prisma.VerifyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>[]
+        }
+        create: {
+          args: Prisma.VerifyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>
+        }
+        createMany: {
+          args: Prisma.VerifyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerifyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>[]
+        }
+        delete: {
+          args: Prisma.VerifyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>
+        }
+        update: {
+          args: Prisma.VerifyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerifyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerifyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerifyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerifyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerifyPayload>
+        }
+        aggregate: {
+          args: Prisma.VerifyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerify>
+        }
+        groupBy: {
+          args: Prisma.VerifyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerifyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerifyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerifyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -788,6 +863,17 @@ export const ChatScalarFieldEnum = {
 } as const
 
 export type ChatScalarFieldEnum = (typeof ChatScalarFieldEnum)[keyof typeof ChatScalarFieldEnum]
+
+
+export const VerifyScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  code: 'code',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerifyScalarFieldEnum = (typeof VerifyScalarFieldEnum)[keyof typeof VerifyScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -974,6 +1060,7 @@ export type GlobalOmitConfig = {
   categories?: Prisma.CategoriesOmit
   transaction?: Prisma.TransactionOmit
   chat?: Prisma.ChatOmit
+  verify?: Prisma.VerifyOmit
 }
 
 /* Types for Logging */

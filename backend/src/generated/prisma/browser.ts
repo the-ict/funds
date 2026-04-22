@@ -37,3 +37,8 @@ export type Transaction = Prisma.TransactionModel
  * 
  */
 export type Chat = Prisma.ChatModel
+/**
+ * Model Verify
+ * 
+ */
+export type Verify = Prisma.VerifyModel

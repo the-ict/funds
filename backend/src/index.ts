@@ -14,8 +14,8 @@ import cors from "cors";
 // routes
 import transactionsRouter from "./routers/transactions.route";
 import categoriesRouter from "./routers/categories.route";
-import usersRouter from "./routers/users.route";
 import uzbekVoiceRouter from "./routers/uzbekvoice.route";
+import usersRouter from "./routers/users.route";
 
 // configure dotenv
 dotenv.config();

@@ -54,7 +54,8 @@ export const ModelName = {
   User: 'User',
   Categories: 'Categories',
   Transaction: 'Transaction',
-  Chat: 'Chat'
+  Chat: 'Chat',
+  Verify: 'Verify'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -119,6 +120,17 @@ export const ChatScalarFieldEnum = {
 } as const
 
 export type ChatScalarFieldEnum = (typeof ChatScalarFieldEnum)[keyof typeof ChatScalarFieldEnum]
+
+
+export const VerifyScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  code: 'code',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerifyScalarFieldEnum = (typeof VerifyScalarFieldEnum)[keyof typeof VerifyScalarFieldEnum]
 
 
 export const SortOrder = {
