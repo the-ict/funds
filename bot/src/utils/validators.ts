@@ -4,8 +4,7 @@ export const validateFullName = (value: string): string | null => {
   const name = value.trim().replace(/\s+/g, " ");
   const hasUrl = /(https?:\/\/|www\.)/i.test(name);
   const hasForbiddenChars = /[<>{}[\]|_*=$%#@!~^`]/.test(name);
-  const hasDigit = /\d/.test(name);
-  const namePattern = /^[\p{L}’'`-]+(?:\s+[\p{L}’'`-]+)+$/u;
+  const isOnlyNumbers = /^\d+$/.test(name);
 
   if (!name) {
     return null;
@@ -15,11 +14,11 @@ export const validateFullName = (value: string): string | null => {
     return null;
   }
 
-  if (hasUrl || hasForbiddenChars || hasDigit) {
+  if (hasUrl || hasForbiddenChars || isOnlyNumbers) {
     return null;
   }
 
-  if (!namePattern.test(name)) {
+  if (!/[\p{L}]/u.test(name) || !name.includes(' ')) {
     return null;
   }
 

@@ -5,6 +5,7 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  getUserByTgId
 } from '../controllers/users.controller';
 import { validateRequest } from '../middleware/validation.middleware';
 import { createUserSchema, updateUserSchema } from '../validators/users.validators';
@@ -16,5 +17,6 @@ router.get('/', getUsers);
 router.get('/:id', getUserById);
 router.put('/:id', validateRequest(updateUserSchema), updateUser);
 router.delete('/:id', deleteUser);
+router.get('/tg/:tg_id', getUserByTgId);
 
 export default router;

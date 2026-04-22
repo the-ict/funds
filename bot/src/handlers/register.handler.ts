@@ -1,6 +1,8 @@
 import { Markup } from "telegraf";
 import { BotContext } from "../types";
+import axios from "axios";
 
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
 const CONFIRM_DATA = "registration_confirm";
 const RESTART_DATA = "registration_restart";
 
@@ -34,13 +36,13 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
 
   if (session.step === "name") {
     if (!ctx.message || !("text" in ctx.message)) {
-      await ctx.reply("Iltimos, ismingiz va familiyangizni matn ko‘rinishida yuboring.");
+      await ctx.reply('Iltimos, ismingiz va familiyangizni matn ko\'rinishida yuboring.\n\n📝 Misol: "Abdulla Qosimov Umarali"');
       return;
     }
 
     const name = state.validatedName;
     if (!name) {
-      await ctx.reply("Ism kiritishda xatolik bor. Iltimos, to‘liq ism va familiyangizni kiriting.");
+      await ctx.reply('Ism kiritishda xatolik bor. Iltimos, to\'liq ism, familiya va otasining ismini kiriting.\n\n📝 Misol: "Abdulla Qosimov Umarali" yoki "Fatima Mirzaeva Rustamovna"');
       return;
     }
 
@@ -120,10 +122,28 @@ export const confirmRegistrationHandler = () => async (ctx: BotContext) => {
 
   ctx.clearSession();
   await ctx.answerCbQuery("Tasdiqlandi ✅");
-  await ctx.reply(
-    "Ajoyib! Ma’lumotlaringiz qabul qilindi ✅\nKerak bo‘lsa /start orqali qaytadan boshlashingiz mumkin.",
-    Markup.removeKeyboard(),
-  );
+  
+  try {
+    const userData = {
+      name,
+      phone,
+      tg_id: ctx.from.id,
+      tg_username: ctx.from.username || null,
+    };
+
+    await axios.post(`${API_BASE_URL}/users`, userData);
+
+    await ctx.reply(
+      "Ajoyib! Ma'lumotlaringiz qabul qilindi ✅",
+      Markup.removeKeyboard(),
+    );
+  } catch (error: any) {
+    console.error("Error creating user:", error.response?.data || error.message);
+    await ctx.reply(
+      "Ro'yxatdan o'tishda xatolik yuz berdi. Iltimos, /start orqali qaytadan harakat qiling.",
+      Markup.removeKeyboard(),
+    );
+  }
 };
 
 export const restartRegistrationHandler = () => async (ctx: BotContext) => {

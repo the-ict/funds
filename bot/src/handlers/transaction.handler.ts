@@ -35,7 +35,6 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
     return;
   }
 
-  // Skip commands
   if ("text" in ctx.message && ctx.message.text.startsWith("/")) {
     await next();
     return;
@@ -143,7 +142,9 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
       try {
         await ctx.deleteMessage(loadingMessageId);
       } catch (e) {
-        // Ignored
+        throw new Error("FAILED_TO_DELETE_LOADING_MESSAGE", {
+          cause: e,
+        });
       }
     }
   }
