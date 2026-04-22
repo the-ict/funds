@@ -11,6 +11,11 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
 
+// routes
+import transactionsRouter from "./routers/transactions.route";
+import categoriesRouter from "./routers/categories.route";
+import usersRouter from "./routers/users.route";
+
 // configure dotenv
 dotenv.config();
 
@@ -23,8 +28,13 @@ app.use(morgan("combined"));
 app.use(cors({
     origin: "http://localhost:5000",
 }));
+app.use(express.json());
 
 // routes
+app.use('/users', usersRouter);
+app.use('/categories', categoriesRouter);
+app.use('/transactions', transactionsRouter);
+
 app.get("/", (req: Request, res: Response) => {
     res.send("Working !");
 });
