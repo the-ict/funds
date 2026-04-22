@@ -1,8 +1,8 @@
-import type { Request, Response, } from "express"
+import { generateAccessToken } from "../utils/jwt";
 import smsService from "../services/sms.service";
+import type { Request, Response, } from "express"
 import { prisma } from "../lib/prisma";
 import logger from "../utils/loggers";
-import { generateAccessToken } from "../utils/jwt";
 
 export const login = async (req: Request, res: Response) => {
     try {
@@ -20,10 +20,7 @@ export const login = async (req: Request, res: Response) => {
 
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
-        await smsService.sendSms({
-            phone_number: phone,
-            message: `Mablag' platformasiga kirish tasdiqlash kodingiz: ${otp}`,
-        });
+        await smsService.sendVerifyCode(user.tg_id, otp);
 
         try {
             await prisma.verify.create({
@@ -67,7 +64,6 @@ export const verify = async (req: Request, res: Response) => {
         if (now > expired_at) {
             return res.status(404).json({ message: "Verify code expired" });
         }
-
 
         await prisma.verify.delete({
             where: {
