@@ -13,11 +13,10 @@ export const processVoiceInput = async (req: MulterRequest, res: Response) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No audio file provided' });
     };
-
     const { tg_id } = req.body;
     if (!tg_id) {
       if (req.file.path) {
-        // fs.unlinkSync(req.file.path);
+        fs.unlinkSync(req.file.path);
       }
       return res.status(400).json({ error: 'tg_id is required' });
     };
@@ -41,14 +40,14 @@ export const processVoiceInput = async (req: MulterRequest, res: Response) => {
       });
     } finally {
       if (fs.existsSync(audioFilePath)) {
-        // fs.unlinkSync(audioFilePath);
+        fs.unlinkSync(audioFilePath);
       }
     };
   } catch (error) {
     logger.error('Failed to process voice input', { error });
     console.log(error);
     if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      // fs.unlinkSync(req.file.path);
+      fs.unlinkSync(req.file.path);
     }
     res.status(500).json({ error: 'Failed to process voice input' });
   }
