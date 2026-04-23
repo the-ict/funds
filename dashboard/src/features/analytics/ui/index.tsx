@@ -24,6 +24,9 @@ import {
   useDashboardStats,
   useAnalyticsBreakdown
 } from "@/shared/config/react-query/hooks";
+import { Skeleton } from "@/shared/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { Plus } from "lucide-react";
 
 const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex flex-col gap-4">
@@ -47,7 +50,19 @@ const Dashboard = () => {
   const { data: breakdownData, isLoading: isBreakdownLoading } = useAnalyticsBreakdown();
 
   if (isStatsLoading || isBreakdownLoading) {
-    return <div className="flex items-center justify-center h-screen"><p className="text-indigo-600 font-bold">Yuklanmoqda...</p></div>;
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-[400px] rounded-2xl" />
+          <Skeleton className="h-[400px] rounded-2xl" />
+        </div>
+      </div>
+    );
   }
 
   const pieData = breakdownData?.pieData || [];
@@ -74,37 +89,49 @@ const Dashboard = () => {
           </div>
 
           <div className="relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-              <span className="text-2xl font-bold text-slate-800">100%</span>
-              <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Jami</p>
-            </div>
+            {pieData.length === 0 ? (
+              <div className="h-40 flex items-center justify-center">
+                <p className="text-slate-400 text-sm font-medium">Ma'lumotlar yo'q</p>
+              </div>
+            ) : (
+              <>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                  <span className="text-2xl font-bold text-slate-800">100%</span>
+                  <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Jami</p>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="space-y-4 mt-6">
-            {pieData.map((item) => (
-              <div key={item.name} className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-sm font-medium text-slate-600">{item.name}</span>
+            {pieData.length === 0 ? (
+               <Skeleton className="w-full h-24" />
+            ) : (
+              pieData.map((item) => (
+                <div key={item.name} className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span className="text-sm font-medium text-slate-600">{item.name}</span>
+                  </div>
+                  <span className="text-sm font-bold text-slate-800">{formatCurrency(item.value)}</span>
                 </div>
-                <span className="text-sm font-bold text-slate-800">{item.value.toLocaleString()} UZS</span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 

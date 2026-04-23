@@ -1,23 +1,14 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import type { AuthRequest } from '../middleware/auth.middleware';
 
-export const createTransaction = async (req: Request, res: Response) => {
+export const createTransaction = async (req: AuthRequest, res: Response) => {
   try {
-    const { amount, type, description, user_id, tg_id } = req.body;
+    const { amount, type, description, category, method, date } = req.body;
+    const user_id = req.user?.user_id;
 
-    let targetUserId = user_id;
-
-    if (!targetUserId && tg_id) {
-      const user = await prisma.user.findUnique({
-        where: { tg_id: tg_id.toString() },
-      });
-      if (user) {
-        targetUserId = user.id;
-      }
-    }
-
-    if (!targetUserId) {
-      return res.status(400).json({ error: "User not found or tg_id not provided" });
+    if (!user_id) {
+      return res.status(401).json({ error: "Unauthorized: User ID not found in token" });
     }
 
     const transaction = await prisma.transaction.create({
@@ -25,7 +16,7 @@ export const createTransaction = async (req: Request, res: Response) => {
         amount,
         type,
         description,
-        user_id: targetUserId,
+        user_id,
       },
     });
     res.status(201).json(transaction);
@@ -34,12 +25,17 @@ export const createTransaction = async (req: Request, res: Response) => {
   }
 };
 
-export const getTransactions = async (req: Request, res: Response) => {
+export const getTransactions = async (req: AuthRequest, res: Response) => {
   try {
+    const user_id = req.user?.user_id;
     const transactions = await prisma.transaction.findMany({
+      where: { user_id: String(user_id) },
       include: {
         user: true,
       },
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
     res.json(transactions);
   } catch (error) {
@@ -47,11 +43,15 @@ export const getTransactions = async (req: Request, res: Response) => {
   }
 };
 
-export const getTransactionById = async (req: Request, res: Response) => {
+export const getTransactionById = async (req: AuthRequest, res: Response) => {
   try {
-    const { tg_id } = req.params;
-    const transaction = await prisma.transaction.findUnique({
-      where: { id: tg_id as string },
+    const { id } = req.params;
+    const user_id = req.user?.user_id;
+    const transaction = await prisma.transaction.findFirst({
+      where: {
+        id: String(id),
+        user_id: String(user_id)
+      },
       include: {
         user: true,
       },
@@ -65,17 +65,21 @@ export const getTransactionById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateTransaction = async (req: Request, res: Response) => {
+export const updateTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { amount, type, description, user_id } = req.body;
+    const user_id = req.user?.user_id;
+    const { amount, type, description, category, method, date } = req.body;
+
     const transaction = await prisma.transaction.update({
-      where: { id: id as string },
+      where: {
+        id: String(id),
+        user_id: String(user_id)
+      },
       data: {
         amount,
         type,
         description,
-        user_id,
       },
     });
     res.json(transaction);
@@ -88,11 +92,16 @@ export const updateTransaction = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteTransaction = async (req: Request, res: Response) => {
+export const deleteTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const user_id = req.user?.user_id;
+
     await prisma.transaction.delete({
-      where: { id: id as string },
+      where: {
+        id: id as string,
+        user_id: String(user_id)
+      },
     });
     res.status(204).send();
   } catch (error: any) {

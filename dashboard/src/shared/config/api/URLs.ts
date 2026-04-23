@@ -7,6 +7,7 @@ const ENDP_TRANSACTIONS = '/transactions';
 const ENDP_ANALYTICS_KPIS = '/analytics/kpis';
 const ENDP_ANALYTICS_CASHFLOW = '/analytics/cashflow';
 const ENDP_ANALYTICS_BREAKDOWN = '/analytics/breakdown';
+const ENDP_CATEGORIES = '/categories';
 
 export {
   BASE_URL,
@@ -15,5 +16,6 @@ export {
   ENDP_TRANSACTIONS,
   ENDP_ANALYTICS_KPIS,
   ENDP_ANALYTICS_CASHFLOW,
-  ENDP_ANALYTICS_BREAKDOWN
+  ENDP_ANALYTICS_BREAKDOWN,
+  ENDP_CATEGORIES
 };

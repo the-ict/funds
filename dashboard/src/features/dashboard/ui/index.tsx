@@ -4,13 +4,14 @@ import {
   cn
 } from "@/shared/lib/utils";
 import StatsCard, {
-  formatCurrency,
 } from "@/widgets/statscard/ui";
+import { formatCurrency } from "@/shared/lib/utils";
 import {
   Briefcase,
   ShoppingCart,
   TrendingUp,
-  Wallet
+  Wallet,
+  Plus
 } from "lucide-react";
 import {
   Area,
@@ -25,6 +26,8 @@ import {
   useCashflowChart,
   useTransactions
 } from "@/shared/config/react-query/hooks";
+import { Skeleton } from "@/shared/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
 
 
 const Dashboard = () => {
@@ -33,7 +36,22 @@ const Dashboard = () => {
   const { data: txData, isLoading: isTxLoading } = useTransactions();
 
   if (isStatsLoading || isChartLoading || isTxLoading) {
-    return <div className="flex items-center justify-center h-screen"><p className="text-indigo-600 font-bold">Yuklanmoqda...</p></div>;
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Skeleton className="h-32 rounded-3xl" />
+          <Skeleton className="h-32 rounded-3xl" />
+          <Skeleton className="h-32 rounded-3xl" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Skeleton className="lg:col-span-2 h-[400px] rounded-3xl" />
+          <div className="space-y-6">
+            <Skeleton className="h-[200px] rounded-3xl" />
+            <Skeleton className="h-[200px] rounded-3xl" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const kpis = [
@@ -134,25 +152,33 @@ const Dashboard = () => {
           <button className="text-indigo-600 text-sm font-semibold hover:underline">Barchasi</button>
         </div>
         <div className="grid gap-3">
-          {transactions.slice(0, 3).map((tx) => (
-            <div key={tx.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between group hover:border-indigo-100 transition-all cursor-pointer">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                  {tx.category === 'Tushlik' ? <ShoppingCart size={20} /> : <Briefcase size={20} />}
+          {transactions.length === 0 ? (
+            <EmptyState
+              title="Amallar topilmadi"
+              description="Sizda hali birorta ham tranzaksiya mavjud emas."
+              icon={<Briefcase size={32} strokeWidth={1.5} />}
+            />
+          ) : (
+            transactions.slice(0, 3).map((tx) => (
+              <div key={tx.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between group hover:border-indigo-100 transition-all cursor-pointer">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                    {tx.category === 'Tushlik' ? <ShoppingCart size={20} /> : <Briefcase size={20} />}
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-800">{tx.category || "Noma'lum"}</h4>
+                    <p className="text-xs text-slate-400">{tx.date || new Date(tx.createdAt).toLocaleDateString()} • {tx.source === 'voice' ? 'Ovozli' : 'Manual'}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-slate-800">{tx.category || "Noma'lum"}</h4>
-                  <p className="text-xs text-slate-400">{tx.date || new Date(tx.createdAt).toLocaleDateString()} • {tx.source === 'voice' ? 'Ovozli' : 'Manual'}</p>
+                <div className="text-right">
+                  <p className={cn("font-bold text-sm", tx.type === 'income' ? 'text-emerald-500' : 'text-rose-500')}>
+                    {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-medium">Muvaffaqiyatli</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className={cn("font-bold", tx.type === 'income' ? "text-emerald-600" : "text-rose-600")}>
-                  {tx.type === 'income' ? '+' : '-'}{formatCurrency(Math.abs(tx.amount))}
-                </p>
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">{tx.method || "Naqd"}</span>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

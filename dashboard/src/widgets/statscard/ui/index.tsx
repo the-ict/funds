@@ -1,27 +1,10 @@
-import { cn } from "@/shared/lib/utils";
+import { cn, formatCurrency } from "@/shared/lib/utils";
 import { motion } from "framer-motion";
 import { ShieldCheck, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 
-export const mockKPIs: KPI[] = [
-    { label: 'Kirim', value: 45200000, trend: 12.5, trendLabel: 'o\'sish' },
-    { label: 'Chiqim', value: 28450000, trend: -4.2, trendLabel: 'ko\'paygan' },
-    { label: 'Sof Foyda', value: 16750000, trend: 8.1, trendLabel: 'barqaror' }
+const mockKPIs = [
+    { label: 'Kirim', value: 0, trend: 0, trendLabel: '' },
 ];
-
-interface KPI {
-    label: string;
-    value: number;
-    trend: number;
-    trendLabel: string;
-}
-
-export const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('uz-UZ', {
-        style: 'decimal',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount) + " so'm";
-};
 
 const StatsCard = ({ kpi, type }: { kpi: typeof mockKPIs[0], type: 'income' | 'expense' | 'profit' }) => {
     const isProfit = type === 'profit';

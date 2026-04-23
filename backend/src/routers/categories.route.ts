@@ -9,7 +9,11 @@ import {
 import { validateRequest } from '../middleware/validation.middleware';
 import { createCategorySchema, updateCategorySchema } from '../validators/categories.validators';
 
+import { authMiddleware } from '../middleware/auth.middleware';
+
 const router = Router();
+
+router.use(authMiddleware);
 
 router.post('/', validateRequest(createCategorySchema), createCategory);
 router.get('/', getCategories);

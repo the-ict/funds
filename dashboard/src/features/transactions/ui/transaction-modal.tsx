@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +21,8 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { Transaction } from "@/shared/config/api/types";
+import { useCreateTransaction, useUpdateTransaction, useDeleteTransaction, useCategories, useCreateCategory } from "@/shared/config/react-query/hooks";
+import { Loader2, Trash2, PlusCircle } from "lucide-react";
 
 interface TransactionModalProps {
   mode: "add" | "edit";
@@ -51,11 +52,61 @@ export function TransactionModal({ mode, transaction, children }: TransactionMod
 
   const [formData, setFormData] = useState(defaultValues);
 
+  const createMutation = useCreateTransaction();
+  const updateMutation = useUpdateTransaction();
+  const deleteMutation = useDeleteTransaction();
+  const { data: categories, isLoading: isCatsLoading } = useCategories();
+  const createCategoryMutation = useCreateCategory();
+
+  const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting transaction:", formData);
-    setOpen(false);
+
+    const amount = parseFloat(formData.amount);
+    const categoryName = isAddingNewCategory ? newCategoryName : formData.category;
+
+    const data = {
+      ...formData,
+      category: categoryName,
+      amount: formData.type === 'expense' ? -Math.abs(amount) : Math.abs(amount)
+    };
+
+    if (isAddingNewCategory) {
+      createCategoryMutation.mutate({ name: newCategoryName, type: formData.type });
+    }
+
+    if (isEdit && transaction) {
+      updateMutation.mutate({ id: transaction.id, data: data as Transaction }, {
+        onSuccess: () => {
+          setOpen(false);
+          setIsAddingNewCategory(false);
+          setNewCategoryName("");
+        }
+      });
+    } else {
+      createMutation.mutate(data as Transaction, {
+        onSuccess: () => {
+          setOpen(false);
+          setIsAddingNewCategory(false);
+          setNewCategoryName("");
+        }
+      });
+    }
   };
+
+  const handleDelete = () => {
+    if (isEdit && transaction) {
+      if (confirm("Haqiqatan ham ushbu tranzaksiyani o'chirmoqchimisiz?")) {
+        deleteMutation.mutate(transaction.id, {
+          onSuccess: () => setOpen(false)
+        });
+      }
+    }
+  };
+
+  const isLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -104,13 +155,50 @@ export function TransactionModal({ mode, transaction, children }: TransactionMod
 
           <div className="space-y-2">
             <Label htmlFor="category">Turkum</Label>
-            <Input
-              id="category"
-              placeholder="Masalan: Tushlik"
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              required
-            />
+            {isAddingNewCategory ? (
+              <div className="flex gap-2">
+                <Input
+                  id="category"
+                  placeholder="Yangi turkum nomi..."
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsAddingNewCategory(false)}
+                >
+                  Bekor
+                </Button>
+              </div>
+            ) : (
+              <Select
+                value={formData.category}
+                onValueChange={(val) => {
+                  if (val === "ADD_NEW") {
+                    setIsAddingNewCategory(true);
+                  } else {
+                    setFormData({ ...formData, category: val });
+                  }
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Turkumni tanlang" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories?.filter(c => c.type === formData.type).map((c) => (
+                    <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                  ))}
+                  <SelectItem value="ADD_NEW" className="text-indigo-600 font-bold">
+                    <div className="flex items-center gap-2">
+                      <PlusCircle size={14} />
+                      Yangi qo'shish
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -151,13 +239,28 @@ export function TransactionModal({ mode, transaction, children }: TransactionMod
             />
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Bekor qilish
-            </Button>
-            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
-              {isEdit ? "Saqlash" : "Qo'shish"}
-            </Button>
+          <DialogFooter className="gap-2 sm:gap-0">
+            {isEdit && (
+              <Button
+                type="button"
+                variant="outline"
+                className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200"
+                onClick={handleDelete}
+                disabled={isLoading}
+              >
+                <Trash2 size={16} className="mr-2" />
+                O'chirish
+              </Button>
+            )}
+            <div className="flex gap-2 ml-auto">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading}>
+                Bekor qilish
+              </Button>
+              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isEdit ? "Saqlash" : "Qo'shish"}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

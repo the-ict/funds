@@ -1,14 +1,17 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import type { AuthRequest } from '../middleware/auth.middleware';
 
-export const createCategory = async (req: Request, res: Response) => {
+export const createCategory = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, type, user_id } = req.body;
+    const { name, type } = req.body;
+    const user_id = req.user?.user_id;
+
     const category = await prisma.categories.create({
       data: {
         name,
-        type,
-        user_id,
+        type: type,
+        user_id: String(user_id),
       },
     });
     res.status(201).json(category);
@@ -17,9 +20,11 @@ export const createCategory = async (req: Request, res: Response) => {
   }
 };
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getCategories = async (req: AuthRequest, res: Response) => {
   try {
+    const user_id = req.user?.user_id;
     const categories = await prisma.categories.findMany({
+      where: { user_id: String(user_id) },
       include: {
         user: true,
       },
@@ -30,11 +35,15 @@ export const getCategories = async (req: Request, res: Response) => {
   }
 };
 
-export const getCategoryById = async (req: Request, res: Response) => {
+export const getCategoryById = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const category = await prisma.categories.findUnique({
-      where: { id: id as string },
+    const user_id = req.user?.user_id;
+    const category = await prisma.categories.findFirst({
+      where: {
+        id: id as string,
+        user_id: String(user_id)
+      },
       include: {
         user: true,
       },
@@ -48,16 +57,19 @@ export const getCategoryById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateCategory = async (req: Request, res: Response) => {
+export const updateCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, type, user_id } = req.body;
+    const user_id = req.user?.user_id;
+    const { name, type } = req.body;
     const category = await prisma.categories.update({
-      where: { id: id as string },
+      where: {
+        id: id as string,
+        user_id: String(user_id)
+      },
       data: {
         name,
-        type,
-        user_id,
+        type
       },
     });
     res.json(category);
@@ -70,11 +82,15 @@ export const updateCategory = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteCategory = async (req: Request, res: Response) => {
+export const deleteCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const user_id = req.user?.user_id;
     await prisma.categories.delete({
-      where: { id: id as string },
+      where: {
+        id: id as string,
+        user_id: String(user_id)
+      },
     });
     res.status(204).send();
   } catch (error: any) {

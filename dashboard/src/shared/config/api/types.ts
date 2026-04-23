@@ -97,3 +97,16 @@ export interface AnalyticsBreakdown {
   barData: BarChartData[];
   pieData: PieChartData[];
 }
+
+// Categories
+export interface Category {
+  id: string;
+  name: string;
+  type: TransactionType;
+  user_id: string;
+}
+
+export interface CreateCategoryDTO {
+  name: string;
+  type: TransactionType;
+}

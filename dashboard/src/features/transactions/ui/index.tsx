@@ -1,17 +1,8 @@
-"use client";
-
-import {
-  useTransactions
-} from "@/shared/config/react-query/hooks";
-import {
-  TransactionFilters
-} from "./transaction-filters";
-import {
-  TransactionModal
-} from "./transaction-modal";
-import {
-  cn
-} from "@/shared/lib/utils";
+import React, { useState } from 'react';
+import { useTransactions } from "@/shared/config/react-query/hooks";
+import { TransactionFilters, FilterState } from "./transaction-filters";
+import { TransactionModal } from "./transaction-modal";
+import { cn, formatCurrency, exportToCSV } from "@/shared/lib/utils";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -24,38 +15,82 @@ import {
   TrendingUp,
   Truck,
   Zap,
+  Building2,
+  FileText,
+  Landmark,
+  Package,
+  Users,
+  Plus,
+  Wallet
 } from "lucide-react";
+import { Skeleton } from "@/shared/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
 
 const categoryIcon: Record<string, { icon: React.ElementType; bg: string; color: string }> = {
-  Tushlik: { icon: ShoppingBag, bg: "bg-amber-50", color: "text-amber-500" },
-  "Sotuv tushumi": { icon: TrendingUp, bg: "bg-emerald-50", color: "text-emerald-500" },
-  Transport: { icon: Truck, bg: "bg-blue-50", color: "text-blue-500" },
-  "Xizmat ko'rsatish": { icon: Zap, bg: "bg-purple-50", color: "text-purple-500" },
-  "Ijaraga to'lov": { icon: Briefcase, bg: "bg-slate-100", color: "text-slate-500" },
-  Marketing: { icon: Briefcase, bg: "bg-rose-50", color: "text-rose-500" },
+  // Kirim (Income)
+  "Chakana savdo": { icon: ShoppingBag, bg: "bg-emerald-50", color: "text-emerald-500" },
+  "Ulgurji savdo": { icon: Package, bg: "bg-teal-50", color: "text-teal-500" },
+  "Xizmat ko'rsatish": { icon: Zap, bg: "bg-blue-50", color: "text-blue-500" },
+  // Chiqim (Expenses)
+  "Soliqlar": { icon: Landmark, bg: "bg-rose-50", color: "text-rose-500" },
+  "Ijara": { icon: Building2, bg: "bg-amber-50", color: "text-amber-500" },
+  "Oylik maosh": { icon: Users, bg: "bg-indigo-50", color: "text-indigo-500" },
+  "Xomashyo": { icon: Package, bg: "bg-orange-50", color: "text-orange-500" },
+  "Logistika": { icon: Truck, bg: "bg-slate-100", color: "text-slate-600" },
+  "Kommunal to'lovlar": { icon: Zap, bg: "bg-cyan-50", color: "text-cyan-500" },
+  "Boshqa": { icon: Briefcase, bg: "bg-gray-50", color: "text-gray-400" },
 };
-
-function formatAmount(amount: number): string {
-  const abs = Math.abs(amount);
-  return abs.toLocaleString("uz-UZ").replace(/,/g, " ") + " so'm";
-}
 
 export default function TransactionsPage() {
   const { data: transactions, isLoading } = useTransactions();
+  const [filters, setFilters] = useState<FilterState>({
+    search: '',
+    type: 'all',
+    method: ''
+  });
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen"><p className="text-indigo-600 font-bold">Yuklanmoqda...</p></div>;
+    return (
+      <div className="space-y-6 pb-12">
+        <div className="flex gap-6 items-stretch">
+          <Skeleton className="flex-1 h-32 rounded-3xl" />
+          <Skeleton className="w-[380px] h-32 rounded-3xl" />
+        </div>
+        <Skeleton className="w-full h-12 rounded-xl mb-4" />
+        <Skeleton className="w-full h-[500px] rounded-3xl" />
+      </div>
+    );
   }
 
-  const txData = transactions || [];
+  const allTransactions = transactions || [];
 
-  const totalIncome = txData
+  const filteredTransactions = allTransactions.filter(tx => {
+    const matchesSearch = !filters.search || 
+      (tx.category?.toLowerCase().includes(filters.search.toLowerCase())) ||
+      (tx.description?.toLowerCase().includes(filters.search.toLowerCase()));
+    
+    const matchesType = filters.type === 'all' || tx.type === filters.type;
+    
+    const matchesMethod = !filters.method || tx.method === filters.method;
+
+    return matchesSearch && matchesType && matchesMethod;
+  });
+
+  const txData = filteredTransactions;
+
+  const totalIncome = allTransactions
     .filter((t) => t.type === "income")
     .reduce((s, t) => s + t.amount, 0);
-  const totalExpense = txData
+  const totalExpense = allTransactions
     .filter((t) => t.type === "expense")
     .reduce((s, t) => s + Math.abs(t.amount), 0);
   const balance = totalIncome - totalExpense;
+
+  const handleExport = () => {
+    exportToCSV(txData, 'tranzaksiyalar-hisoboti');
+  };
+
+  const resetFilters = () => setFilters({ search: '', type: 'all', method: '' });
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
@@ -73,10 +108,24 @@ export default function TransactionsPage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <TransactionFilters>
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-sm font-bold hover:bg-indigo-100 transition-colors"
+              >
+                <Download size={15} />
+                Hisobot
+              </button>
+              <TransactionFilters 
+                filters={filters} 
+                setFilters={setFilters} 
+                onReset={resetFilters}
+              >
                 <button className="flex items-center gap-2 px-4 py-2 bg-white text-slate-600 rounded-xl text-sm font-semibold border border-slate-200 hover:bg-slate-50 transition-colors">
                   <Filter size={15} />
                   Filtrlar
+                  {(filters.search || filters.type !== 'all' || filters.method) && (
+                    <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                  )}
                 </button>
               </TransactionFilters>
               <button className="flex items-center gap-2 px-4 py-2 bg-white text-slate-600 rounded-xl text-sm font-semibold border border-slate-200 hover:bg-slate-50 transition-colors">
@@ -94,7 +143,7 @@ export default function TransactionsPage() {
               </div>
               <div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Jami Kirim</p>
-                <p className="text-xl font-black text-slate-900">{formatAmount(totalIncome)}</p>
+                <p className="text-xl font-black text-slate-900">{formatCurrency(totalIncome)}</p>
               </div>
             </div>
 
@@ -106,7 +155,7 @@ export default function TransactionsPage() {
               </div>
               <div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Jami Chiqim</p>
-                <p className="text-xl font-black text-slate-900">{formatAmount(totalExpense)}</p>
+                <p className="text-xl font-black text-slate-900">{formatCurrency(totalExpense)}</p>
               </div>
             </div>
           </div>
@@ -122,7 +171,7 @@ export default function TransactionsPage() {
           <div className="relative">
             <p className="text-indigo-200 text-xs font-semibold tracking-wide mb-3">Joriy balans</p>
             <p className="text-white font-black text-2xl leading-tight">
-              {formatAmount(balance)}
+              {formatCurrency(balance)}
             </p>
           </div>
 
@@ -138,70 +187,88 @@ export default function TransactionsPage() {
       </div>
 
       <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-slate-100">
-              <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sana</th>
-              <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Turkum</th>
-              <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Miqdor</th>
-              <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Izoh</th>
-              <th className="px-8 py-4" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {txData.map((tx) => {
-              const category = tx.category || "Noma'lum";
-              const catMeta = categoryIcon[category] ?? { icon: Briefcase, bg: "bg-slate-50", color: "text-slate-400" };
-              const Icon = catMeta.icon;
-              return (
-                <tr key={tx.id} className="hover:bg-slate-50/50 transition-colors group">
-                  {/* Date */}
-                  <td className="px-8 py-6">
-                    <p className="text-sm font-bold text-slate-900">{tx.date || new Date(tx.createdAt).toLocaleDateString()}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">{tx.time || new Date(tx.createdAt).toLocaleTimeString()}</p>
-                  </td>
+        {txData.length === 0 ? (
+          <div className="p-12">
+            <EmptyState
+              title="Hali hech qanday aylanma yo'q"
+              description="Kirim va chiqimlaringizni nazorat qilish uchun birinchi tranzaksiyangizni qo'shing."
+              icon={<Wallet size={32} strokeWidth={1.5} />}
+              action={
+                <TransactionModal mode="add">
+                  <button className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm hover:shadow flex items-center gap-2">
+                    <Plus size={18} strokeWidth={2.5} />
+                    Yangi tranzaksiya qo'shish
+                  </button>
+                </TransactionModal>
+              }
+            />
+          </div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-100">
+                <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sana</th>
+                <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Turkum</th>
+                <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Miqdor</th>
+                <th className="px-8 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Izoh</th>
+                <th className="px-8 py-4" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {txData.map((tx) => {
+                const category = tx.category || "Noma'lum";
+                const catMeta = categoryIcon[category] ?? { icon: Briefcase, bg: "bg-slate-50", color: "text-slate-400" };
+                const Icon = catMeta.icon;
+                return (
+                  <tr key={tx.id} className="hover:bg-slate-50/50 transition-colors group">
+                    {/* Date */}
+                    <td className="px-8 py-6">
+                      <p className="text-sm font-bold text-slate-900">{tx.date || new Date(tx.createdAt).toLocaleDateString()}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{tx.time || new Date(tx.createdAt).toLocaleTimeString()}</p>
+                    </td>
 
-                  {/* Category */}
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-3">
-                      <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center shrink-0", catMeta.bg)}>
-                        <Icon size={16} className={catMeta.color} />
+                    {/* Category */}
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-3">
+                        <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center shrink-0", catMeta.bg)}>
+                          <Icon size={16} className={catMeta.color} />
+                        </div>
+                        <span className="text-sm font-semibold text-slate-800">{category}</span>
                       </div>
-                      <span className="text-sm font-semibold text-slate-800">{category}</span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Amount */}
-                  <td className="px-8 py-6">
-                    <span className={cn(
-                      "text-base font-black",
-                      tx.type === "income" ? "text-emerald-500" : "text-rose-500"
-                    )}>
-                      {tx.type === "income" ? "+ " : "- "}
-                      {formatAmount(Math.abs(tx.amount))}
-                    </span>
-                  </td>
+                    {/* Amount */}
+                    <td className="px-8 py-6">
+                      <span className={cn(
+                        "text-base font-black",
+                        tx.type === "income" ? "text-emerald-500" : "text-rose-500"
+                      )}>
+                        {tx.type === "income" ? "+ " : "- "}
+                        {formatCurrency(Math.abs(tx.amount))}
+                      </span>
+                    </td>
 
-                  {/* Description */}
-                  <td className="px-8 py-6 max-w-[220px]">
-                    <p className="text-sm text-slate-500 italic leading-snug">
-                      &ldquo;{tx.description}&rdquo;
-                    </p>
-                  </td>
+                    {/* Description */}
+                    <td className="px-8 py-6 max-w-[220px]">
+                      <p className="text-sm text-slate-500 italic leading-snug">
+                        &ldquo;{tx.description}&rdquo;
+                      </p>
+                    </td>
 
-                  {/* Edit */}
-                  <td className="px-8 py-6 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                    <TransactionModal mode="edit" transaction={tx}>
-                      <button className="text-indigo-500 hover:text-indigo-700 text-xs font-bold transition-colors">
-                        Tahrirlash
-                      </button>
-                    </TransactionModal>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    {/* Edit */}
+                    <td className="px-8 py-6 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+                      <TransactionModal mode="edit" transaction={tx}>
+                        <button className="text-indigo-500 hover:text-indigo-700 text-xs font-bold transition-colors">
+                          Tahrirlash
+                        </button>
+                      </TransactionModal>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
 
         {/* Pagination */}
         <div className="px-8 py-5 border-t border-slate-100 flex items-center justify-between">

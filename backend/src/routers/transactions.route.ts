@@ -9,7 +9,11 @@ import {
 import { validateRequest } from '../middleware/validation.middleware';
 import { createTransactionSchema, updateTransactionSchema } from '../validators/transactions.validators';
 
+import { authMiddleware } from '../middleware/auth.middleware';
+
 const router = Router();
+
+router.use(authMiddleware);
 
 router.post('/', validateRequest(createTransactionSchema), createTransaction);
 router.get('/', getTransactions);
