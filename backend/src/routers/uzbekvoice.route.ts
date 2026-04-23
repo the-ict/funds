@@ -2,12 +2,16 @@ import { processTextInput, processVoiceInput } from '../controllers/uzbekvoice.c
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 
 const router = Router();
 
 const storage = multer.diskStorage({
   destination: (req: any, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
     const uploadDir = 'audios';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
     cb(null, uploadDir);
   },
   filename: (req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {

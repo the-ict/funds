@@ -10,9 +10,9 @@ import cors from "cors";
 import transactionsRouter from "./routers/transactions.route.js";
 import categoriesRouter from "./routers/categories.route.js";
 import uzbekVoiceRouter from "./routers/uzbekvoice.route.js";
+import analyticsRouter from "./routers/analytics.route.js";
 import usersRouter from "./routers/users.route.js";
 import authRouter from "./routers/auth.route.js";
-import analyticsRouter from "./routers/analytics.route.js";
 
 // configure dotenv
 dotenv.config();
@@ -43,6 +43,8 @@ app.get("/", (req: Request, res: Response) => {
 // error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).send("Something broke!");
+    console.log("error: ", err);
+    logger.error("Something is broke in API: ", err);
 });
 
 // start server

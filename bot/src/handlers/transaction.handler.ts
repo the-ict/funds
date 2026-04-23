@@ -50,7 +50,7 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
       const buffer = await fileRes.arrayBuffer();
 
       const formData = new FormData();
-      formData.append("audio", new Blob([buffer]), "voice.ogg");
+      formData.append("audio", new Blob([buffer], { type: "audio/ogg" }), "voice.ogg");
       formData.append("tg_id", userId || "unknown");
 
       backendResponse = await fetch(`${BACKEND_URL}/voice`, {
