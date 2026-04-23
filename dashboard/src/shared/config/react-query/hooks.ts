@@ -1,3 +1,5 @@
+"use client";
+
 import type { LoginRequest, VerifyRequest, CreateTransactionDTO } from '../api/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionsService } from '../api/services/transactions.service';

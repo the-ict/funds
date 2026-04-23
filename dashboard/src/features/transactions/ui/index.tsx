@@ -1,9 +1,17 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
-import { useTransactions } from "@/shared/config/react-query/hooks";
-import { TransactionModal } from "./transaction-modal";
-import { TransactionFilters } from "./transaction-filters";
+import {
+  useTransactions
+} from "@/shared/config/react-query/hooks";
+import {
+  TransactionFilters
+} from "./transaction-filters";
+import {
+  TransactionModal
+} from "./transaction-modal";
+import {
+  cn
+} from "@/shared/lib/utils";
 import {
   ArrowDownLeft,
   ArrowUpRight,

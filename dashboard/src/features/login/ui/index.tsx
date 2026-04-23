@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useLogin, useVerifyOTP } from "../../../shared/config/react-query/hooks";
+import {
+  useLogin,
+  useVerifyOTP
+} from "../../../shared/config/react-query/hooks";
 
 export default function LoginPage() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
