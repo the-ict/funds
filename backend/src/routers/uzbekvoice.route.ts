@@ -8,7 +8,7 @@ const router = Router();
 
 const storage = multer.diskStorage({
   destination: (req: any, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-    const uploadDir = 'audios';
+    const uploadDir = 'src/audios';
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
