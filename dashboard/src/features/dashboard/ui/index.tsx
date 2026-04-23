@@ -81,7 +81,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <button className="mt-auto w-full py-2 bg-white text-indigo-600 border border-indigo-100 rounded-xl text-xs font-bold hover:bg-indigo-50 transition-colors">
+          <button className="cursor-pointer mt-auto w-full py-2 bg-white text-indigo-600 border border-indigo-100 rounded-xl text-xs font-bold hover:bg-indigo-50 transition-colors">
             To'liq hisobot
           </button>
         </div>
