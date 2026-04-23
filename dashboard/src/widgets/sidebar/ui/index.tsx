@@ -12,20 +12,6 @@ const Sidebar = () => {
 
   return (
     <aside className="fixed left-0 top-0 flex flex-col py-8 px-4 w-64 h-screen border-r border-slate-100 bg-white shadow-sm z-50">
-
-      {/* Logo / Brand */}
-      <div className="mb-10 px-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-sm shadow-indigo-200">
-            <span className="text-white font-black text-base leading-none">M</span>
-          </div>
-          <div>
-            <h1 className="text-base font-black tracking-tight text-slate-900 leading-none">Mablag'</h1>
-            <p className="text-[10px] font-semibold text-slate-400 mt-0.5 tracking-widest uppercase">Elite Oversight</p>
-          </div>
-        </div>
-      </div>
-
       {/* Menu */}
       <nav className="flex-1 space-y-1">
         {menuItems.map((item) => {
