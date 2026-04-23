@@ -2,6 +2,6 @@ import { ArrowLeftRight, BarChart3, LayoutDashboard, Settings, Wallet } from "lu
 
 export const menuItems = [
     { id: 'dashboard', href: '/', label: 'Asosiy', icon: LayoutDashboard },
-    { id: 'transactions', href: '/transactions', label: 'Amallar', icon: ArrowLeftRight },
-    { id: 'reports', href: '/analytics', label: 'Hisobotlar', icon: BarChart3 },
+    { id: 'transactions', href: '/transactions', label: 'Amallar', icon: Wallet },
+    { id: 'analytics', href: '/analytics', label: 'Hisobotlar', icon: BarChart3 },
 ];

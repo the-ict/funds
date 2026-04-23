@@ -1,6 +1,8 @@
 "use client";
 
-import { Search } from "lucide-react";
+import {
+  Search
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -9,9 +11,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/shared/ui/sheet";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
+import {
+  Button
+} from "@/shared/ui/button";
+import {
+  Input
+} from "@/shared/ui/input";
+import {
+  Label
+} from "@/shared/ui/label";
 
 export function TransactionFilters({ children }: { children: React.ReactNode }) {
   return (
@@ -19,14 +27,14 @@ export function TransactionFilters({ children }: { children: React.ReactNode }) 
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent className="w-[400px] sm:w-[540px]">
+      <SheetContent className="w-[400px] sm:w-[540px] p-6">
         <SheetHeader>
           <SheetTitle>Filtrlar</SheetTitle>
           <SheetDescription>
             Tranzaksiyalarni qidirish va saralash uchun filtrlarni sozlang.
           </SheetDescription>
         </SheetHeader>
-        
+
         <div className="py-6 space-y-6">
           <div className="space-y-2">
             <Label>Qidiruv</Label>
