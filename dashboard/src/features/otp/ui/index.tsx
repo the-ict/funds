@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useRef } from 'react';
 import { Shield, Info, Lock } from 'lucide-react';
 

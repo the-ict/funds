@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 
@@ -6,12 +8,10 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
-      {/* Logo Placeholder */}
       <div className="mb-8 w-12 h-12 bg-black rounded-lg flex items-center justify-center overflow-hidden">
         <div className="text-orange-500 font-bold text-xl">M</div>
       </div>
 
-      {/* Main Card */}
       <div className="bg-white w-full max-w-md rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
         <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
           Tizimga kirish
@@ -48,19 +48,12 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        {/* Bot Notification */}
         <div className="mt-8 flex items-center justify-center gap-2 text-[13px]">
           <MessageSquare size={16} className="text-green-500 fill-green-500" />
           <p className="text-gray-400">
             Tasdiqlash kodi <span className="text-green-500 font-medium cursor-pointer">@MablagBot</span> orqali yuboriladi
           </p>
         </div>
-      </div>
-
-      {/* Footer Links */}
-      <div className="mt-6 flex gap-6 text-sm text-gray-500">
-        <button className="hover:text-gray-800 transition-colors">Yordam kerakmi?</button>
-        <button className="hover:text-gray-800 transition-colors">Maxfiylik siyosati</button>
       </div>
     </div>
   );
