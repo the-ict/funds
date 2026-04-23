@@ -1,271 +1,196 @@
-"use client";
+"use client"
 
 import React from 'react';
 import {
-  Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis
-} from 'recharts';
-import {
-  Calendar, ChevronRight, Download, Filter, Lightbulb, PiggyBank, ShieldCheck, TrendingUp, Zap
+  ArrowUpRight,
+  ArrowDownRight,
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  MoreHorizontal,
+  Send,
 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 
-// Mock Data
-const revenueData = [
-  { day: 'DUSH', hozirgi: 20000, prognoz: 18000 },
-  { day: 'SESH', hozirgi: 35000, prognoz: 30000 },
-  { day: 'CHOR', hozirgi: 25000, prognoz: 22000 },
-  { day: 'PAY', hozirgi: 50000, prognoz: 45000 },
-  { day: 'JUMA', hozirgi: 30000, prognoz: 28000 },
-  { day: 'SHAN', hozirgi: 65000, prognoz: 60000 },
-  { day: 'YAK', hozirgi: 40000, prognoz: 38000 },
+// Ma'lumotlar
+const barData = [
+  { name: 'Dush', karta: 40, naqd: 20 },
+  { name: 'Sesh', karta: 55, naqd: 35 },
+  { name: 'Chor', karta: 30, naqd: 45 },
+  { name: 'Pay', karta: 65, naqd: 25 },
+  { name: 'Jum', karta: 50, naqd: 30 },
+  { name: 'Shan', karta: 60, naqd: 40 },
+  { name: 'Yak', karta: 25, naqd: 15 },
 ];
 
-const expenseData = [
-  { name: 'Operatsion', value: 34120, color: '#4f46e5' },
-  { name: 'Marketing', value: 12400, color: '#10b981' },
-  { name: 'Xizmatlar', value: 11710, color: '#f59e0b' },
+const pieData = [
+  { name: 'Ijara', value: 25000000, color: '#F97316' },
+  { name: 'Oyliklar', value: 42000000, color: '#4ADE80' },
+  { name: 'Tovar', value: 15450000, color: '#6366F1' },
 ];
 
-export default function AnalyticsPage() {
+const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) => (
+  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex flex-col gap-4">
+    <div className="flex justify-between items-start">
+      <div className={`p-2 rounded-lg ${color}`}>
+        <Icon size={20} className="text-gray-700" />
+      </div>
+      <div className={`flex items-center text-xs font-medium px-2 py-1 rounded-full ${isUp ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+        {isUp ? '+' : ''}{percentage}%
+      </div>
+    </div>
+    <div>
+      <p className="text-sm text-gray-500 font-medium">{title}</p>
+      <h3 className="text-2xl font-bold text-slate-800 mt-1">{amount} <span className="text-sm font-semibold">UZS</span></h3>
+    </div>
+  </div>
+);
+
+const Dashboard = () => {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
-      {/* Header Section */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Tahlil markazi</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Moliyaviy ko'rsatkichlaringizning chuqur tahlili va kelajakdagi prognozlari.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="bg-slate-50 p-1 rounded-xl flex items-center border border-slate-100">
-            <button className="px-6 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-bold shadow-sm">
-              Oylik
-            </button>
-            <button className="px-6 py-2 text-slate-500 hover:text-slate-700 rounded-lg text-sm font-medium transition-colors">
-              Choraklik
-            </button>
-            <button className="px-6 py-2 text-slate-500 hover:text-slate-700 rounded-lg text-sm font-medium transition-colors">
-              Yillik
-            </button>
-          </div>
-
-          <Button variant="outline" className="gap-2 border-slate-200 text-slate-700 font-medium h-10 px-4 rounded-xl">
-            <Calendar size={16} className="text-slate-400" />
-            Iyun, 2024
-          </Button>
-        </div>
+    <div className="min-h-screen font-sans">
+      {/* Top Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <StatCard title="Umumiy tushum" amount="145,200,000" percentage="12.5" isUp={true} icon={TrendingUp} color="bg-green-50" />
+        <StatCard title="Jami xarajatlar" amount="82,450,000" percentage="-4.2" isUp={false} icon={TrendingDown} color="bg-red-50" />
+        <StatCard title="Sof foyda" amount="62,750,000" percentage="8.1" isUp={true} icon={Wallet} color="bg-indigo-50" />
       </div>
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-12 gap-6">
-        {/* Revenue Growth Card */}
-        <div className="col-span-12 lg:col-span-8 bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
-          <div className="flex items-start justify-between mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Xarajatlar Tarkibi (Pie Chart) */}
+        <div className="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
+          <div className="flex justify-between items-center mb-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Daromad o'sishi</h3>
-              <p className="text-sm text-slate-500 mt-1">O'tgan davr bilan solishtirma tahlil</p>
+              <h3 className="font-bold text-slate-800">Xarajatlar tarkibi</h3>
+              <p className="text-xs text-gray-400">Kategoriyalar bo'yicha</p>
             </div>
-            <div className="flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-500">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
-                HOZIRGI
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-200" />
-                PROGNOZ
-              </div>
-            </div>
+            <MoreHorizontal size={20} className="text-gray-400 cursor-pointer" />
           </div>
 
-          <div className="h-64 mb-6">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData}>
-                <defs>
-                  <linearGradient id="colorHozirgi" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="day"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }}
-                  dy={10}
-                />
-                <RechartsTooltip />
-                <Area
-                  type="monotone"
-                  dataKey="prognoz"
-                  stroke="#cbd5e1"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  fill="transparent"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="hozirgi"
-                  stroke="#4f46e5"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorHozirgi)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="flex items-end justify-between pt-6 border-t border-slate-50">
-            <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Jami Daromad</p>
-              <div className="flex items-center gap-4">
-                <span className="text-3xl font-black text-slate-900">$142,500.00</span>
-                <span className="flex items-center gap-1 text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
-                  <TrendingUp size={14} /> +12.4%
-                </span>
-              </div>
-            </div>
-            <button className="text-indigo-600 text-sm font-bold hover:text-indigo-800 flex items-center gap-1 transition-colors">
-              Batafsil ko'rish <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-
-        {/* Expenses Card */}
-        <div className="col-span-12 lg:col-span-4 bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col">
-          <div>
-            <h3 className="text-xl font-bold text-slate-900">Xarajatlar</h3>
-            <p className="text-sm text-slate-500 mt-1">Kategoriyalar bo'yicha</p>
-          </div>
-
-          <div className="flex-1 relative min-h-[220px] flex items-center justify-center my-4">
+          <div className="relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={expenseData}
-                  innerRadius={70}
-                  outerRadius={95}
-                  paddingAngle={2}
+                  data={pieData}
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
                   dataKey="value"
-                  stroke="none"
                 >
-                  {expenseData.map((entry, index) => (
+                  {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <RechartsTooltip />
               </PieChart>
             </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Jami</span>
-              <span className="text-2xl font-black text-slate-900">$58,230</span>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+              <span className="text-2xl font-bold text-slate-800">100%</span>
+              <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Jami</p>
             </div>
           </div>
 
-          <div className="space-y-4">
-            {expenseData.map((item) => (
-              <div key={item.name} className="flex justify-between items-center group">
+          <div className="space-y-4 mt-6">
+            {pieData.map((item) => (
+              <div key={item.name} className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-sm font-bold text-slate-700">{item.name}</span>
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-sm font-medium text-slate-600">{item.name}</span>
                 </div>
-                <span className="text-sm font-medium text-slate-500">${item.value.toLocaleString()}</span>
+                <span className="text-sm font-bold text-slate-800">{item.value.toLocaleString()} UZS</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Expected Transactions */}
-      <div className="mt-10">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-900">Kutilayotgan tranzaksiyalar</h2>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" className="border-slate-200 text-slate-500 rounded-xl h-10 w-10">
-              <Filter size={18} />
-            </Button>
-            <Button variant="outline" size="icon" className="border-slate-200 text-slate-500 rounded-xl h-10 w-10">
-              <Download size={18} />
-            </Button>
+        {/* Tushum Tahlili (Bar Chart) */}
+        <div className="lg:col-span-8 space-y-6">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h3 className="font-bold text-slate-800">Tushum tahlili</h3>
+                <p className="text-xs text-gray-400">To'lov usuli: Naqd va Karta</p>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-indigo-600" />
+                  <span className="text-xs text-gray-500">Karta</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-slate-100" />
+                  <span className="text-xs text-gray-500">Naqd</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData}>
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94A3B8', fontSize: 12 }}
+                    dy={10}
+                  />
+                  <Bar dataKey="karta" fill="#4F46E5" radius={[4, 4, 0, 0]} barSize={30} />
+                  <Bar dataKey="naqd" fill="#F1F5F9" radius={[4, 4, 0, 0]} barSize={30} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 mt-8 pt-8 border-t border-gray-50">
+              <div>
+                <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Karta orqali</p>
+                <h4 className="text-xl font-bold text-slate-800">98,400,000 UZS</h4>
+                <div className="flex items-center gap-1 text-green-500 mt-1">
+                  <ArrowUpRight size={14} />
+                  <span className="text-xs font-medium">18% o'sish</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Naqd pulda</p>
+                <h4 className="text-xl font-bold text-slate-800">46,800,000 UZS</h4>
+                <div className="flex items-center gap-1 text-red-500 mt-1">
+                  <ArrowDownRight size={14} />
+                  <span className="text-xs font-medium">5% kamayish</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Telegram Info Card */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex items-center gap-8">
+            <div className="w-32 h-24 bg-slate-900 rounded-xl overflow-hidden relative shadow-lg">
+              <div className="absolute inset-2 border border-slate-700 rounded-lg opacity-50" />
+              <div className="absolute bottom-2 left-2 right-2 h-1 bg-indigo-500 rounded-full" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-indigo-600 mb-1">
+                <Send size={14} fill="currentColor" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Tezkor ma'lumot</span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-800">Telegram orqali yangilanishlar faol</h3>
+              <p className="text-sm text-gray-500 mt-1">Barcha moliyaviy amallar va tahlillar real vaqtda @mablag_bot orqali yuborilmoqda.</p>
+              <div className="inline-flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-lg mt-4">
+                <div className="w-4 h-4 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-indigo-600 rounded-full" />
+                </div>
+                <span className="text-xs font-semibold text-indigo-700">Telegram bilan sinxronlangan</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-white text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
-              <tr>
-                <th className="px-8 py-5 text-left">Hamkor</th>
-                <th className="px-8 py-5 text-left">Sana</th>
-                <th className="px-8 py-5 text-left">Kategoriya</th>
-                <th className="px-8 py-5 text-left">Holat</th>
-                <th className="px-8 py-5 text-right">Summa</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {/* Row 1 */}
-              <tr className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-8 py-5">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-sm">
-                      A
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900 text-sm">Amazon Web Services</p>
-                      <p className="text-xs text-slate-500">Cloud Infrastructure</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-sm font-medium text-slate-600">24 Iyun, 2024</td>
-                <td className="px-8 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest rounded-md">
-                    TEXNOLOGIYA
-                  </span>
-                </td>
-                <td className="px-8 py-5">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    <span className="text-sm font-bold text-amber-600">Kutilmoqda</span>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right font-black text-slate-900">
-                  -$2,450.00
-                </td>
-              </tr>
-              {/* Row 2 */}
-              <tr className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-8 py-5">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold text-sm">
-                      G
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900 text-sm">Global Partners LLC</p>
-                      <p className="text-xs text-slate-500">Consulting Fee</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-sm font-medium text-slate-600">22 Iyun, 2024</td>
-                <td className="px-8 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest rounded-md">
-                    XIZMATLAR
-                  </span>
-                </td>
-                <td className="px-8 py-5">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    <span className="text-sm font-bold text-emerald-600">Tasdiqlangan</span>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right font-black text-emerald-600">
-                  +$15,000.00
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
-
     </div>
   );
-}
+};
+
+export default Dashboard;
