@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from 'react';
 import { useTransactions } from "@/shared/config/react-query/hooks";
 import { TransactionFilters, FilterState } from "./transaction-filters";
@@ -65,12 +67,12 @@ export default function TransactionsPage() {
   const allTransactions = transactions || [];
 
   const filteredTransactions = allTransactions.filter(tx => {
-    const matchesSearch = !filters.search || 
+    const matchesSearch = !filters.search ||
       (tx.category?.toLowerCase().includes(filters.search.toLowerCase())) ||
       (tx.description?.toLowerCase().includes(filters.search.toLowerCase()));
-    
+
     const matchesType = filters.type === 'all' || tx.type === filters.type;
-    
+
     const matchesMethod = !filters.method || tx.method === filters.method;
 
     return matchesSearch && matchesType && matchesMethod;
@@ -115,9 +117,9 @@ export default function TransactionsPage() {
                 <Download size={15} />
                 Hisobot
               </button>
-              <TransactionFilters 
-                filters={filters} 
-                setFilters={setFilters} 
+              <TransactionFilters
+                filters={filters}
+                setFilters={setFilters}
                 onReset={resetFilters}
               >
                 <button className="flex items-center gap-2 px-4 py-2 bg-white text-slate-600 rounded-xl text-sm font-semibold border border-slate-200 hover:bg-slate-50 transition-colors">

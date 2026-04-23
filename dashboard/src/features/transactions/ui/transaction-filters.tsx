@@ -53,9 +53,9 @@ export function TransactionFilters({ filters, setFilters, onReset, children }: T
             <Label>Qidiruv</Label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-              <Input 
-                placeholder="Turkum yoki izoh bo'yicha..." 
-                className="pl-9" 
+              <Input
+                placeholder="Turkum yoki izoh bo'yicha..."
+                className="pl-9"
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               />
@@ -65,22 +65,22 @@ export function TransactionFilters({ filters, setFilters, onReset, children }: T
           <div className="space-y-2">
             <Label>Tranzaksiya turi</Label>
             <div className="flex gap-2">
-              <Button 
-                variant={filters.type === 'all' ? 'default' : 'outline'} 
-                className="flex-1"
+              <Button
+                variant={filters.type === 'all' ? 'default' : 'outline'}
+                className="flex-1 cursor-pointer"
                 onClick={() => setFilters({ ...filters, type: 'all' })}
               >
                 Barchasi
               </Button>
-              <Button 
-                variant={filters.type === 'income' ? 'default' : 'outline'} 
+              <Button
+                variant={filters.type === 'income' ? 'default' : 'outline'}
                 className="flex-1 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200"
                 onClick={() => setFilters({ ...filters, type: 'income' })}
               >
                 Kirim
               </Button>
-              <Button 
-                variant={filters.type === 'expense' ? 'default' : 'outline'} 
+              <Button
+                variant={filters.type === 'expense' ? 'default' : 'outline'}
                 className="flex-1 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
                 onClick={() => setFilters({ ...filters, type: 'expense' })}
               >
@@ -93,9 +93,9 @@ export function TransactionFilters({ filters, setFilters, onReset, children }: T
             <Label>To'lov usuli</Label>
             <div className="flex flex-wrap gap-2">
               {["Plastik karta", "Naqd pul", "Bank o'tkazmasi"].map((m) => (
-                <Button 
+                <Button
                   key={m}
-                  variant={filters.method === m ? 'default' : 'outline'} 
+                  variant={filters.method === m ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setFilters({ ...filters, method: filters.method === m ? '' : m })}
                 >
