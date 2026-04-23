@@ -197,7 +197,7 @@ export default function TransactionsPage() {
               icon={<Wallet size={32} strokeWidth={1.5} />}
               action={
                 <TransactionModal mode="add">
-                  <button className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm hover:shadow flex items-center gap-2">
+                  <button className="cursor-pointer px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm hover:shadow flex items-center gap-2">
                     <Plus size={18} strokeWidth={2.5} />
                     Yangi tranzaksiya qo'shish
                   </button>
