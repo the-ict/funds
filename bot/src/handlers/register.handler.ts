@@ -102,7 +102,7 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
 
     await ctx.reply(
       summaryText(session.data.name ?? "", state.validatedPhone as string, username),
-      confirmKeyboard // Bu yerda faqat inline keyboard
+      confirmKeyboard
     );
     return;
   }

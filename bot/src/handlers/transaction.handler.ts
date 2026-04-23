@@ -19,6 +19,8 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
     return;
   }
 
+  console.log("ctx: message: ", ctx.message);
+
   const userId = ctx.from?.id.toString();
   if (userId && processingUsers.has(userId)) {
     await ctx.reply("⏳ Iltimos, kutib turing. Avvalgi so'rovingiz hali bajarilmoqda.");
@@ -33,7 +35,7 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
     const loadingMessage = await ctx.reply("⏳ Bajarilmoqda...");
     loadingMessageId = loadingMessage.message_id;
 
-    const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+    const BACKEND_URL = process.env.API_BASE_URL || "http://localhost:3000";
 
     if ("text" in ctx.message) {
       backendResponse = await fetch(`${BACKEND_URL}/voice/text`, {
