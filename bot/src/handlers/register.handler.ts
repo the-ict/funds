@@ -97,10 +97,13 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
         phone: state.validatedPhone,
       },
     });
-    await ctx.reply(summaryText(session.data.name ?? "", state.validatedPhone, username), {
-      ...confirmKeyboard,
-      ...Markup.removeKeyboard(),
-    });
+
+    await ctx.reply("Tayyor! ✅", Markup.removeKeyboard());
+
+    await ctx.reply(
+      summaryText(session.data.name ?? "", state.validatedPhone as string, username),
+      confirmKeyboard // Bu yerda faqat inline keyboard
+    );
     return;
   }
 
