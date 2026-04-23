@@ -19,13 +19,16 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-
 import {
   useDashboardStats,
   useAnalyticsBreakdown
 } from "@/shared/config/react-query/hooks";
-import { Skeleton } from "@/shared/ui/skeleton";
-import { formatCurrency } from "@/shared/lib/utils";
+import {
+  Skeleton
+} from "@/shared/ui/skeleton";
+import {
+  formatCurrency
+} from "@/shared/lib/utils";
 
 const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex flex-col gap-4">
@@ -68,7 +71,7 @@ const Dashboard = () => {
   const barData = breakdownData?.barData || [];
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="max-h-screen overflow-y-auto font-sans">
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatCard title="Umumiy tushum" amount={(statsData?.income || 0).toLocaleString()} percentage="12.5" isUp={true} icon={TrendingUp} color="bg-green-50" />
