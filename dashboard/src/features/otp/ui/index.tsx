@@ -60,11 +60,11 @@ const OTPVerification: React.FC = () => {
             ))}
           </div>
 
-          <button className="w-full bg-[#2E3192] hover:bg-[#25287a] text-white font-semibold py-4 rounded-xl transition-colors mb-6">
+          <button className="cursor-pointer w-full bg-[#2E3192] hover:bg-[#25287a] text-white font-semibold py-4 rounded-xl transition-colors mb-6">
             Tasdiqlash
           </button>
 
-          <button className="text-[#2E3192] font-medium text-sm hover:underline">
+          <button className="cursor-pointer text-[#2E3192] font-medium text-sm hover:underline">
             Kodni qayta yuborish
           </button>
         </div>

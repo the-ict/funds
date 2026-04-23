@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#2E3192] hover:bg-[#25287a] text-white font-semibold py-3 rounded-lg transition-colors duration-200"
+            className="cursor-pointer w-full bg-[#2E3192] hover:bg-[#25287a] text-white font-semibold py-3 rounded-lg transition-colors duration-200"
           >
             Davom etish
           </button>
