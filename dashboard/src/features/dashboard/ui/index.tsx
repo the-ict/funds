@@ -1,10 +1,31 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
-import StatsCard, { formatCurrency, mockKPIs } from "@/widgets/statscard/ui";
-import { Briefcase, ShoppingCart, Smartphone, TrendingUp, Zap } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
-import { chartData, mockTransactions } from "@/shared/lib/mockData";
+import {
+  cn
+} from "@/shared/lib/utils";
+import StatsCard, {
+  formatCurrency,
+  mockKPIs
+} from "@/widgets/statscard/ui";
+import {
+  Briefcase,
+  ShoppingCart,
+  Smartphone,
+  TrendingUp,
+  Zap
+} from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis
+} from "recharts";
+import {
+  chartData,
+  mockTransactions
+} from "@/shared/lib/mockData";
 
 
 const Dashboard = () => {

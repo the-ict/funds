@@ -2,6 +2,8 @@ import { mockTransactions } from "@/shared/lib/mockData";
 import { cn } from "@/shared/lib/utils";
 import { formatCurrency } from "@/widgets/statscard/ui";
 import { Briefcase, MessageSquare, Mic, Search } from "lucide-react";
+import { TransactionModal } from "./transaction-modal";
+import { TransactionFilters } from "./transaction-filters";
 
 export default function TransactionsPage() {
     return (
@@ -10,9 +12,11 @@ export default function TransactionsPage() {
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-indigo-900">Tranzaksiyalar boshqaruvi</h2>
                     <div className="flex gap-2">
-                        <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 rounded-lg text-sm font-medium border border-slate-200">
-                            <Search size={16} /> Filtrlar
-                        </button>
+                        <TransactionFilters>
+                            <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 rounded-lg text-sm font-medium border border-slate-200">
+                                <Search size={16} /> Filtrlar
+                            </button>
+                        </TransactionFilters>
                     </div>
                 </div>
             </div>
@@ -55,7 +59,9 @@ export default function TransactionsPage() {
                                     </p>
                                 </td>
                                 <td className="px-8 py-6 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="text-indigo-600 hover:text-indigo-800 font-bold text-sm">Tahrirlash</button>
+                                    <TransactionModal mode="edit" transaction={tx}>
+                                        <button className="text-indigo-600 hover:text-indigo-800 font-bold text-sm">Tahrirlash</button>
+                                    </TransactionModal>
                                 </td>
                             </tr>
                         ))}
