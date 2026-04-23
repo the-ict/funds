@@ -11,6 +11,8 @@ import transactionsRouter from "./routers/transactions.route";
 import categoriesRouter from "./routers/categories.route";
 import uzbekVoiceRouter from "./routers/uzbekvoice.route";
 import usersRouter from "./routers/users.route";
+import authRouter from "./routers/auth.route";
+import analyticsRouter from "./routers/analytics.route";
 
 // configure dotenv
 dotenv.config();
@@ -31,6 +33,8 @@ app.use('/users', usersRouter);
 app.use('/categories', categoriesRouter);
 app.use('/transactions', transactionsRouter);
 app.use('/voice', uzbekVoiceRouter);
+app.use('/auth', authRouter);
+app.use('/analytics', analyticsRouter);
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Working !");

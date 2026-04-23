@@ -20,22 +20,10 @@ import {
   Cell,
 } from 'recharts';
 
-// Ma'lumotlar
-const barData = [
-  { name: 'Dush', karta: 40, naqd: 20 },
-  { name: 'Sesh', karta: 55, naqd: 35 },
-  { name: 'Chor', karta: 30, naqd: 45 },
-  { name: 'Pay', karta: 65, naqd: 25 },
-  { name: 'Jum', karta: 50, naqd: 30 },
-  { name: 'Shan', karta: 60, naqd: 40 },
-  { name: 'Yak', karta: 25, naqd: 15 },
-];
-
-const pieData = [
-  { name: 'Ijara', value: 25000000, color: '#F97316' },
-  { name: 'Oyliklar', value: 42000000, color: '#4ADE80' },
-  { name: 'Tovar', value: 15450000, color: '#6366F1' },
-];
+import {
+  useDashboardStats,
+  useAnalyticsBreakdown
+} from "@/shared/config/react-query/hooks";
 
 const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex flex-col gap-4">
@@ -55,13 +43,23 @@ const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) =
 );
 
 const Dashboard = () => {
+  const { data: statsData, isLoading: isStatsLoading } = useDashboardStats();
+  const { data: breakdownData, isLoading: isBreakdownLoading } = useAnalyticsBreakdown();
+
+  if (isStatsLoading || isBreakdownLoading) {
+    return <div className="flex items-center justify-center h-screen"><p className="text-indigo-600 font-bold">Yuklanmoqda...</p></div>;
+  }
+
+  const pieData = breakdownData?.pieData || [];
+  const barData = breakdownData?.barData || [];
+
   return (
     <div className="min-h-screen font-sans">
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatCard title="Umumiy tushum" amount="145,200,000" percentage="12.5" isUp={true} icon={TrendingUp} color="bg-green-50" />
-        <StatCard title="Jami xarajatlar" amount="82,450,000" percentage="-4.2" isUp={false} icon={TrendingDown} color="bg-red-50" />
-        <StatCard title="Sof foyda" amount="62,750,000" percentage="8.1" isUp={true} icon={Wallet} color="bg-indigo-50" />
+        <StatCard title="Umumiy tushum" amount={(statsData?.income || 0).toLocaleString()} percentage="12.5" isUp={true} icon={TrendingUp} color="bg-green-50" />
+        <StatCard title="Jami xarajatlar" amount={(statsData?.expense || 0).toLocaleString()} percentage="-4.2" isUp={false} icon={TrendingDown} color="bg-red-50" />
+        <StatCard title="Sof foyda" amount={(statsData?.profit || 0).toLocaleString()} percentage="8.1" isUp={true} icon={Wallet} color="bg-indigo-50" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

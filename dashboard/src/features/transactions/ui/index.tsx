@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/shared/lib/utils";
-import { mockTransactions } from "@/shared/lib/mockData";
+import { useTransactions } from "@/shared/config/react-query/hooks";
 import { TransactionModal } from "./transaction-modal";
 import { TransactionFilters } from "./transaction-filters";
 import {
@@ -32,15 +32,23 @@ function formatAmount(amount: number): string {
   return abs.toLocaleString("uz-UZ").replace(/,/g, " ") + " so'm";
 }
 
-const totalIncome = mockTransactions
-  .filter((t) => t.type === "income")
-  .reduce((s, t) => s + t.amount, 0);
-const totalExpense = mockTransactions
-  .filter((t) => t.type === "expense")
-  .reduce((s, t) => s + Math.abs(t.amount), 0);
-const balance = totalIncome - totalExpense;
-
 export default function TransactionsPage() {
+  const { data: transactions, isLoading } = useTransactions();
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen"><p className="text-indigo-600 font-bold">Yuklanmoqda...</p></div>;
+  }
+
+  const txData = transactions || [];
+
+  const totalIncome = txData
+    .filter((t) => t.type === "income")
+    .reduce((s, t) => s + t.amount, 0);
+  const totalExpense = txData
+    .filter((t) => t.type === "expense")
+    .reduce((s, t) => s + Math.abs(t.amount), 0);
+  const balance = totalIncome - totalExpense;
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
 
@@ -133,15 +141,16 @@ export default function TransactionsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {mockTransactions.map((tx) => {
-              const catMeta = categoryIcon[tx.category] ?? { icon: Briefcase, bg: "bg-slate-50", color: "text-slate-400" };
+            {txData.map((tx) => {
+              const category = tx.category || "Noma'lum";
+              const catMeta = categoryIcon[category] ?? { icon: Briefcase, bg: "bg-slate-50", color: "text-slate-400" };
               const Icon = catMeta.icon;
               return (
                 <tr key={tx.id} className="hover:bg-slate-50/50 transition-colors group">
                   {/* Date */}
                   <td className="px-8 py-6">
-                    <p className="text-sm font-bold text-slate-900">{tx.date}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">{tx.time}</p>
+                    <p className="text-sm font-bold text-slate-900">{tx.date || new Date(tx.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{tx.time || new Date(tx.createdAt).toLocaleTimeString()}</p>
                   </td>
 
                   {/* Category */}
@@ -150,7 +159,7 @@ export default function TransactionsPage() {
                       <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center shrink-0", catMeta.bg)}>
                         <Icon size={16} className={catMeta.color} />
                       </div>
-                      <span className="text-sm font-semibold text-slate-800">{tx.category}</span>
+                      <span className="text-sm font-semibold text-slate-800">{category}</span>
                     </div>
                   </td>
 

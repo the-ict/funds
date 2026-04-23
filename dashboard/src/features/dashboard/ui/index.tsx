@@ -5,14 +5,12 @@ import {
 } from "@/shared/lib/utils";
 import StatsCard, {
   formatCurrency,
-  mockKPIs
 } from "@/widgets/statscard/ui";
 import {
   Briefcase,
   ShoppingCart,
-  Smartphone,
   TrendingUp,
-  Zap
+  Wallet
 } from "lucide-react";
 import {
   Area,
@@ -23,18 +21,36 @@ import {
   XAxis
 } from "recharts";
 import {
-  chartData,
-  mockTransactions
-} from "@/shared/lib/mockData";
+  useDashboardStats,
+  useCashflowChart,
+  useTransactions
+} from "@/shared/config/react-query/hooks";
 
 
 const Dashboard = () => {
+  const { data: statsData, isLoading: isStatsLoading } = useDashboardStats();
+  const { data: chartData, isLoading: isChartLoading } = useCashflowChart();
+  const { data: txData, isLoading: isTxLoading } = useTransactions();
+
+  if (isStatsLoading || isChartLoading || isTxLoading) {
+    return <div className="flex items-center justify-center h-screen"><p className="text-indigo-600 font-bold">Yuklanmoqda...</p></div>;
+  }
+
+  const kpis = [
+    { label: 'Kirim', value: statsData?.income || 0, trend: 12.5, trendLabel: 'o\'sish' },
+    { label: 'Chiqim', value: statsData?.expense || 0, trend: -4.2, trendLabel: 'ko\'paygan' },
+    { label: 'Sof Foyda', value: statsData?.profit || 0, trend: 8.1, trendLabel: 'barqaror' }
+  ];
+
+  const transactions = txData || [];
+  const cashflowData = chartData || [];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatsCard kpi={mockKPIs[0]} type="income" />
-        <StatsCard kpi={mockKPIs[1]} type="expense" />
-        <StatsCard kpi={mockKPIs[2]} type="profit" />
+        <StatsCard kpi={kpis[0]} type="income" />
+        <StatsCard kpi={kpis[1]} type="expense" />
+        <StatsCard kpi={kpis[2]} type="profit" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -47,7 +63,7 @@ const Dashboard = () => {
           </div>
           <div className="h-64 mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
+              <AreaChart data={cashflowData}>
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1} />
@@ -79,32 +95,36 @@ const Dashboard = () => {
 
         <div className="glass-panel elite-shadow rounded-2xl p-6 flex flex-col bg-indigo-50/30">
           <div className="flex items-center gap-2 mb-6">
-            <Zap className="text-indigo-600" size={20} />
-            <h3 className="font-bold text-indigo-900">Aqlli tahlil</h3>
+            <Wallet className="text-indigo-600" size={20} />
+            <h3 className="font-bold text-indigo-900">Byudjet holati</h3>
           </div>
           <div className="space-y-6 flex-1">
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
-                <Smartphone size={16} />
+            <div>
+              <div className="flex justify-between text-sm font-semibold mb-2">
+                <span className="text-slate-700">Oylik byudjet</span>
+                <span className="text-indigo-600">65% sarflandi</span>
               </div>
-              <div>
-                <h4 className="text-sm font-semibold text-slate-800 mb-1">Kutilayotgan harajatlar</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">Kelasi hafta uchun kommunal to'lovlar kutilmoqda.</p>
+              <div className="w-full bg-slate-200 rounded-full h-2.5">
+                <div className="bg-indigo-600 h-2.5 rounded-full" style={{ width: '65%' }}></div>
               </div>
+              <p className="text-xs text-slate-500 mt-2">Belgilangan limitgacha yana 3,500,000 UZS qoldi.</p>
             </div>
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <TrendingUp size={16} />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-slate-800 mb-1">Tejamkorlik imkoniyati</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">Oziq-ovqat harajatlari 15% ga kamaydi.</p>
-              </div>
+
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <button className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2">
+                  <TrendingUp size={16} />
+                </div>
+                <span className="text-xs font-semibold text-slate-700">Kirim qoshish</span>
+              </button>
+              <button className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-2">
+                  <ShoppingCart size={16} />
+                </div>
+                <span className="text-xs font-semibold text-slate-700">Chiqim qoshish</span>
+              </button>
             </div>
           </div>
-          <button className="cursor-pointer mt-auto w-full py-2 bg-white text-indigo-600 border border-indigo-100 rounded-xl text-xs font-bold hover:bg-indigo-50 transition-colors">
-            To'liq hisobot
-          </button>
         </div>
       </div>
 
@@ -114,22 +134,22 @@ const Dashboard = () => {
           <button className="text-indigo-600 text-sm font-semibold hover:underline">Barchasi</button>
         </div>
         <div className="grid gap-3">
-          {mockTransactions.slice(0, 3).map((tx) => (
+          {transactions.slice(0, 3).map((tx) => (
             <div key={tx.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between group hover:border-indigo-100 transition-all cursor-pointer">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
                   {tx.category === 'Tushlik' ? <ShoppingCart size={20} /> : <Briefcase size={20} />}
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-800">{tx.category}</h4>
-                  <p className="text-xs text-slate-400">{tx.date} • {tx.source === 'voice' ? 'Ovozli' : 'Manual'}</p>
+                  <h4 className="font-semibold text-slate-800">{tx.category || "Noma'lum"}</h4>
+                  <p className="text-xs text-slate-400">{tx.date || new Date(tx.createdAt).toLocaleDateString()} • {tx.source === 'voice' ? 'Ovozli' : 'Manual'}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className={cn("font-bold", tx.type === 'income' ? "text-emerald-600" : "text-rose-600")}>
                   {tx.type === 'income' ? '+' : '-'}{formatCurrency(Math.abs(tx.amount))}
                 </p>
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">{tx.method}</span>
+                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">{tx.method || "Naqd"}</span>
               </div>
             </div>
           ))}

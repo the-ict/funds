@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import { Transaction } from "@/shared/lib/mockData";
+import { Transaction } from "@/shared/config/api/types";
 
 interface TransactionModalProps {
   mode: "add" | "edit";
