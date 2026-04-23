@@ -93,7 +93,6 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const getUserByTgId = async (req: Request, res: Response) => {
   try {
     const { tg_id } = req.params;
-    console.log(tg_id, "tg_id");
 
     const user = await prisma.user.findUnique({
       where: { tg_id: tg_id as string },
@@ -109,6 +108,7 @@ export const getUserByTgId = async (req: Request, res: Response) => {
 
     res.json(user);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 };
