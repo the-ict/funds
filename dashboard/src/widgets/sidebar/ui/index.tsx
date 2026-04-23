@@ -52,9 +52,9 @@ const Sidebar = () => {
       {/* Bottom */}
       <div className="mt-auto space-y-3">
         <TransactionModal mode="add">
-          <button className="w-full bg-indigo-600 text-white rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 text-sm font-semibold shadow-md shadow-indigo-200/50 hover:bg-indigo-700 active:scale-[0.98] transition-all">
+          <button className="cursor-pointer w-full bg-indigo-600 text-white rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 text-sm font-semibold shadow-md shadow-indigo-200/50 hover:bg-indigo-700 active:scale-[0.98] transition-all">
             <Plus size={18} />
-            <span>New Transaction</span>
+            <span>Yangi amal</span>
           </button>
         </TransactionModal>
 

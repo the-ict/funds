@@ -5,13 +5,14 @@ import {
 } from "@/shared/lib/utils";
 import StatsCard, {
 } from "@/widgets/statscard/ui";
-import { formatCurrency } from "@/shared/lib/utils";
+import {
+  formatCurrency
+} from "@/shared/lib/utils";
 import {
   Briefcase,
   ShoppingCart,
   TrendingUp,
   Wallet,
-  Plus
 } from "lucide-react";
 import {
   Area,
@@ -28,6 +29,7 @@ import {
 } from "@/shared/config/react-query/hooks";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { TransactionModal } from "@/features/transactions/ui/transaction-modal";
 
 
 const Dashboard = () => {
@@ -63,12 +65,19 @@ const Dashboard = () => {
   const transactions = txData || [];
   const cashflowData = chartData || [];
 
+  const BUDGET_LIMIT = 10000000;
+  const expenseValue = statsData?.expense || 0;
+  const budgetProgress = Math.min(Math.round((expenseValue / BUDGET_LIMIT) * 100), 100);
+  const remainingBudget = Math.max(BUDGET_LIMIT - expenseValue, 0);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatsCard kpi={kpis[0]} type="income" />
-        <StatsCard kpi={kpis[1]} type="expense" />
-        <StatsCard kpi={kpis[2]} type="profit" />
+      <div className="bg-slate-50/50 p-4 rounded-3xl border border-slate-100/50">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <StatsCard kpi={kpis[0]} type="income" />
+          <StatsCard kpi={kpis[1]} type="expense" />
+          <StatsCard kpi={kpis[2]} type="profit" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -120,27 +129,46 @@ const Dashboard = () => {
             <div>
               <div className="flex justify-between text-sm font-semibold mb-2">
                 <span className="text-slate-700">Oylik byudjet</span>
-                <span className="text-indigo-600">65% sarflandi</span>
+                <span className={cn(
+                  "font-bold",
+                  budgetProgress > 90 ? "text-rose-600" : budgetProgress > 70 ? "text-amber-600" : "text-indigo-600"
+                )}>
+                  {budgetProgress}% sarflandi
+                </span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-2.5">
-                <div className="bg-indigo-600 h-2.5 rounded-full" style={{ width: '65%' }}></div>
+                <div
+                  className={cn(
+                    "h-2.5 rounded-full transition-all duration-1000",
+                    budgetProgress > 90 ? "bg-rose-500" : budgetProgress > 70 ? "bg-amber-500" : "bg-indigo-600"
+                  )}
+                  style={{ width: `${budgetProgress}%` }}
+                ></div>
               </div>
-              <p className="text-xs text-slate-500 mt-2">Belgilangan limitgacha yana 3,500,000 UZS qoldi.</p>
+              <p className="text-xs text-slate-500 mt-2">
+                {remainingBudget > 0
+                  ? `Belgilangan limitgacha yana ${formatCurrency(remainingBudget)} qoldi.`
+                  : "Byudjet limiti tugadi!"}
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <button className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer">
-                <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2">
-                  <TrendingUp size={16} />
-                </div>
-                <span className="text-xs font-semibold text-slate-700">Kirim qoshish</span>
-              </button>
-              <button className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer">
-                <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-2">
-                  <ShoppingCart size={16} />
-                </div>
-                <span className="text-xs font-semibold text-slate-700">Chiqim qoshish</span>
-              </button>
+              <TransactionModal mode="add" initialType="income">
+                <button className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer w-full">
+                  <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2">
+                    <TrendingUp size={16} />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-700">Kirim qo'shish</span>
+                </button>
+              </TransactionModal>
+              <TransactionModal mode="add" initialType="expense">
+                <button className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer w-full">
+                  <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-2">
+                    <ShoppingCart size={16} />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-700">Chiqim qo'shish</span>
+                </button>
+              </TransactionModal>
             </div>
           </div>
         </div>
@@ -160,23 +188,25 @@ const Dashboard = () => {
             />
           ) : (
             transactions.slice(0, 3).map((tx) => (
-              <div key={tx.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between group hover:border-indigo-100 transition-all cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                    {tx.category === 'Tushlik' ? <ShoppingCart size={20} /> : <Briefcase size={20} />}
+              <TransactionModal key={tx.id} mode="edit" transaction={tx}>
+                <div className="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between group hover:border-indigo-100 transition-all cursor-pointer w-full">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                      {tx.category === 'Tushlik' ? <ShoppingCart size={20} /> : <Briefcase size={20} />}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-slate-800">{tx.category || "Noma'lum"}</h4>
+                      <p className="text-xs text-slate-400">{tx.date || new Date(tx.createdAt).toLocaleDateString()} • {tx.source === 'voice' ? 'Ovozli' : 'Manual'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-800">{tx.category || "Noma'lum"}</h4>
-                    <p className="text-xs text-slate-400">{tx.date || new Date(tx.createdAt).toLocaleDateString()} • {tx.source === 'voice' ? 'Ovozli' : 'Manual'}</p>
+                  <div className="text-right">
+                    <p className={cn("font-bold text-sm", tx.type === 'income' ? 'text-emerald-500' : 'text-rose-500')}>
+                      {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-medium">Muvaffaqiyatli</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className={cn("font-bold text-sm", tx.type === 'income' ? 'text-emerald-500' : 'text-rose-500')}>
-                    {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
-                  </p>
-                  <p className="text-[10px] text-slate-400 font-medium">Muvaffaqiyatli</p>
-                </div>
-              </div>
+              </TransactionModal>
             ))
           )}
         </div>

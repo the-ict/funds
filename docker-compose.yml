@@ -13,7 +13,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
   backend:
     build:
       context: ./backend
@@ -25,7 +24,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
   bot:
     build:
       context: ./bot
@@ -39,7 +37,6 @@ services:
         condition: service_healthy
       backend:
         condition: service_started
-
   dashboard:
     build:
       context: ./dashboard
@@ -47,10 +44,9 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3000
     ports:
-      - "3001:3000"
+      - "3001:3001"
     depends_on:
       backend:
         condition: service_started
-
 volumes:
   postgres_data:

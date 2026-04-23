@@ -23,18 +23,22 @@ import {
 import { Transaction } from "@/shared/config/api/types";
 import { useCreateTransaction, useUpdateTransaction, useDeleteTransaction, useCategories, useCreateCategory } from "@/shared/config/react-query/hooks";
 import { Loader2, Trash2, PlusCircle } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
 
 interface TransactionModalProps {
   mode: "add" | "edit";
   transaction?: Transaction;
+  initialType?: "income" | "expense";
   children: React.ReactNode;
 }
+
+type initialType = "income" | "expense";
 
 export function TransactionModal({ mode, transaction, children }: TransactionModalProps) {
   const [open, setOpen] = useState(false);
 
   const isEdit = mode === "edit";
-  const defaultValues = isEdit && transaction ? {
+  const [formData, setFormData] = useState(isEdit && transaction ? {
     type: transaction.type,
     amount: Math.abs(transaction.amount).toString(),
     category: transaction.category,
@@ -48,9 +52,7 @@ export function TransactionModal({ mode, transaction, children }: TransactionMod
     method: "Plastik karta",
     date: new Date().toISOString().split('T')[0],
     description: "",
-  };
-
-  const [formData, setFormData] = useState(defaultValues);
+  });
 
   const createMutation = useCreateTransaction();
   const updateMutation = useUpdateTransaction();
@@ -126,7 +128,7 @@ export function TransactionModal({ mode, transaction, children }: TransactionMod
             <Button
               type="button"
               variant={formData.type === "expense" ? "destructive" : "outline"}
-              className="flex-1"
+              className={cn("flex-1", "cursor-pointer")}
               onClick={() => setFormData({ ...formData, type: "expense" })}
             >
               Chiqim
@@ -134,7 +136,7 @@ export function TransactionModal({ mode, transaction, children }: TransactionMod
             <Button
               type="button"
               variant={formData.type === "income" ? "default" : "outline"}
-              className={formData.type === "income" ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+              className={cn(formData.type === "income" ? "bg-emerald-600 hover:bg-emerald-700" : "", "cursor-pointer")}
               onClick={() => setFormData({ ...formData, type: "income" })}
             >
               Kirim
