@@ -1,13 +1,12 @@
 "use client";
 
 import React from 'react';
-import { 
-  Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis 
+import {
+  Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis
 } from 'recharts';
-import { 
-  Calendar, ChevronRight, Download, Filter, Lightbulb, PiggyBank, ShieldCheck, TrendingUp, Zap 
+import {
+  Calendar, ChevronRight, Download, Filter, Lightbulb, PiggyBank, ShieldCheck, TrendingUp, Zap
 } from 'lucide-react';
-import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 
 // Mock Data
@@ -38,7 +37,7 @@ export default function AnalyticsPage() {
             Moliyaviy ko'rsatkichlaringizning chuqur tahlili va kelajakdagi prognozlari.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="bg-slate-50 p-1 rounded-xl flex items-center border border-slate-100">
             <button className="px-6 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-bold shadow-sm">
@@ -51,7 +50,7 @@ export default function AnalyticsPage() {
               Yillik
             </button>
           </div>
-          
+
           <Button variant="outline" className="gap-2 border-slate-200 text-slate-700 font-medium h-10 px-4 rounded-xl">
             <Calendar size={16} className="text-slate-400" />
             Iyun, 2024
@@ -89,29 +88,29 @@ export default function AnalyticsPage() {
                     <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis 
-                  dataKey="day" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} 
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }}
                   dy={10}
                 />
                 <RechartsTooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="prognoz" 
-                  stroke="#cbd5e1" 
+                <Area
+                  type="monotone"
+                  dataKey="prognoz"
+                  stroke="#cbd5e1"
                   strokeWidth={2}
                   strokeDasharray="5 5"
-                  fill="transparent" 
+                  fill="transparent"
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="hozirgi" 
-                  stroke="#4f46e5" 
+                <Area
+                  type="monotone"
+                  dataKey="hozirgi"
+                  stroke="#4f46e5"
                   strokeWidth={3}
-                  fillOpacity={1} 
-                  fill="url(#colorHozirgi)" 
+                  fillOpacity={1}
+                  fill="url(#colorHozirgi)"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -139,7 +138,7 @@ export default function AnalyticsPage() {
             <h3 className="text-xl font-bold text-slate-900">Xarajatlar</h3>
             <p className="text-sm text-slate-500 mt-1">Kategoriyalar bo'yicha</p>
           </div>
-          
+
           <div className="flex-1 relative min-h-[220px] flex items-center justify-center my-4">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -174,63 +173,6 @@ export default function AnalyticsPage() {
                 <span className="text-sm font-medium text-slate-500">${item.value.toLocaleString()}</span>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Smart Recommendations */}
-      <div className="space-y-6 mt-10">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">Aqlli tavsiyalar</h2>
-          <button className="text-indigo-600 text-sm font-bold hover:text-indigo-800 flex items-center gap-1 transition-colors">
-            Hammasini ko'rish <ChevronRight size={16} />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="bg-[#2e2575] rounded-3xl p-8 text-white relative overflow-hidden shadow-lg">
-            <div className="absolute top-0 right-0 p-6 opacity-10">
-              <Lightbulb size={120} />
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-6 backdrop-blur-sm">
-              <PiggyBank size={20} className="text-indigo-200" />
-            </div>
-            <h4 className="text-lg font-bold mb-3">Soliqlarni optimallashtirish</h4>
-            <p className="text-indigo-100/70 text-sm leading-relaxed mb-8">
-              Kelgusi chorak uchun operatsion xarajatlarni 15% ga kamaytirish orqali soliqlardan $4,500 tejashingiz mumkin.
-            </p>
-            <button className="bg-white text-[#2e2575] px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-indigo-50 transition-colors">
-              Rejani ko'rish
-            </button>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-6">
-              <TrendingUp size={20} className="text-emerald-600" />
-            </div>
-            <h4 className="text-lg font-bold text-slate-900 mb-3">Yangi investitsiya imkoniyati</h4>
-            <p className="text-slate-500 text-sm leading-relaxed mb-8">
-              Portfelingizdagi naqd pul qoldig'i me'yordan 22% yuqori. Uni likvid aktivlarga yo'naltirishni tavsiya etamiz.
-            </p>
-            <button className="bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 hover:bg-slate-100 transition-colors">
-              Tahlil qilish
-            </button>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mb-6">
-              <ShieldCheck size={20} className="text-amber-500" />
-            </div>
-            <h4 className="text-lg font-bold text-slate-900 mb-3">Moliyaviy xavfsizlik</h4>
-            <p className="text-slate-500 text-sm leading-relaxed mb-8 flex-1">
-              Zahira jamg'armangiz 6 oylik xarajatlarni qoplash darajasiga yetdi. Sizning moliyaviy barqarorligingiz 94/100.
-            </p>
-            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-              <div className="bg-emerald-500 h-full w-[94%] rounded-full" />
-            </div>
           </div>
         </div>
       </div>
@@ -323,7 +265,7 @@ export default function AnalyticsPage() {
           </table>
         </div>
       </div>
-      
+
     </div>
   );
 }
