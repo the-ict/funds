@@ -1,7 +1,16 @@
-import { MiddlewareFn } from "telegraf";
-import { BotContext } from "../types";
-import { normalizePhone } from "../utils/phone.util";
-import { validateFullName, validatePhone } from "../utils/validators";
+import {
+  MiddlewareFn
+} from "telegraf";
+import {
+  BotContext
+} from "../types";
+import {
+  normalizePhone
+} from "../utils/phone.util";
+import {
+  validateFullName,
+  validatePhone
+} from "../utils/validators";
 
 export const validationMiddleware = (): MiddlewareFn<BotContext> => async (ctx, next) => {
   if (!ctx.session) {
@@ -13,7 +22,9 @@ export const validationMiddleware = (): MiddlewareFn<BotContext> => async (ctx, 
     await next();
     return;
   }
+
   const state = ctx.state as Record<string, unknown>;
+
   delete state.validatedName;
   delete state.validatedPhone;
   delete state.contactOwnerMismatch;

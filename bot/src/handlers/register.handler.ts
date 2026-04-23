@@ -30,15 +30,20 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
   const session = ctx.session;
   const state = ctx.state;
 
+  console.log("session: ", session);
+
   if (!session) {
     return;
   }
 
   if (session.step === "name") {
+    console.log("i am inside of name step")
     if (!ctx.message || !("text" in ctx.message)) {
       await ctx.reply('Iltimos, ismingiz va familiyangizni matn ko\'rinishida yuboring.\n\n📝 Misol: "Abdulla Qosimov Umarali"');
       return;
     }
+
+    console.log("state: Just wanna see what state looks like", state);
 
     const name = state.validatedName;
     if (!name) {
