@@ -1,5 +1,5 @@
+import Dashboard from "@/features/dashboard/ui";
+
 export default function RootPage() {
-  return (
-    <div>Hello</div>
-  )
+  return <Dashboard />;
 }

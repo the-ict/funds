@@ -1,72 +1,10 @@
+"use client";
 
-export const mockTransactions: Transaction[] = [
-  {
-    id: '1',
-    date: '24 Okt, 2023',
-    time: '14:20',
-    category: 'Tushlik',
-    amount: -150000,
-    type: 'expense',
-    description: 'Rayhon restoranida jamoaviy tushlik',
-    method: 'Plastik karta',
-    source: 'voice'
-  },
-  {
-    id: '2',
-    date: '23 Okt, 2023',
-    time: '09:45',
-    category: 'Sotuv tushumi',
-    amount: 12250000,
-    type: 'income',
-    description: 'Xarid - ID: 45290 uchun to\'lov',
-    method: 'Bank o\'tkazmasi',
-    source: 'manual'
-  },
-  {
-    id: '3',
-    date: '22 Okt, 2023',
-    time: '18:10',
-    category: 'Transport',
-    amount: -45000,
-    type: 'expense',
-    description: 'Yandex Taxi - Ofisdan uyga',
-    method: 'Naqd pul',
-    source: 'manual'
-  },
-  {
-    id: '4',
-    date: '21 Okt, 2023',
-    time: '11:30',
-    category: 'Xizmat ko\'rsatish',
-    amount: 3500000,
-    type: 'income',
-    description: 'Konsultatsiya uchun xizmat haqi',
-    method: 'Bank o\'tkazmasi',
-    source: 'voice'
-  },
-  {
-    id: '5',
-    date: '20 Okt, 2023',
-    time: '10:00',
-    category: 'Ijaraga to\'lov',
-    amount: -8500000,
-    type: 'expense',
-    description: 'Oktyabr oyi uchun ofis ijarasi',
-    method: 'Bank o\'tkazmasi',
-    source: 'manual'
-  },
-  {
-    id: '6',
-    date: '19 Okt, 2023',
-    time: '12:00',
-    category: 'Marketing',
-    amount: -2500000,
-    type: 'expense',
-    description: 'Facebook reklamalari',
-    method: 'Karta',
-    source: 'telegram'
-  }
-];
+import { cn } from "@/shared/lib/utils";
+import StatsCard, { formatCurrency, mockKPIs } from "@/widgets/statscard/ui";
+import { Briefcase, ShoppingCart, Smartphone, TrendingUp, Zap } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import { chartData, mockTransactions } from "@/shared/lib/mockData";
 
 
 const Dashboard = () => {

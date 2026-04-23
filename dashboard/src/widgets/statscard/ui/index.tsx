@@ -23,8 +23,6 @@ export const formatCurrency = (amount: number) => {
     }).format(amount) + " so'm";
 };
 
-
-
 const StatsCard = ({ kpi, type }: { kpi: typeof mockKPIs[0], type: 'income' | 'expense' | 'profit' }) => {
     const isProfit = type === 'profit';
     return (
@@ -59,7 +57,7 @@ const StatsCard = ({ kpi, type }: { kpi: typeof mockKPIs[0], type: 'income' | 'e
                 Umumiy {kpi.label}
             </p>
             <h3 className={cn("text-2xl font-black tracking-tight", !isProfit && "text-indigo-900")}>
-                {formatCurreny(kpi.value)}
+                {formatCurrency(kpi.value)}
             </h3>
             <div className={cn("mt-4 flex items-center gap-2 text-xs", isProfit ? "text-indigo-200/60" : "text-slate-400")}>
                 <ShieldCheck size={14} />

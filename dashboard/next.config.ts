@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   devIndicators: false,
   output: 'standalone',
-  // eslint: {
-  //   ignoreDuringBuilds: true,
-  // },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

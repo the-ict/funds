@@ -1,6 +1,12 @@
-import { Bell, HelpCircle, RefreshCcw, Search } from "lucide-react";
+"use client";
 
-const TopBar = ({ title }: { title: string }) => {
+import { Bell, HelpCircle, RefreshCcw, Search } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+const TopBar = () => {
+    const pathname = usePathname();
+    const title = pathname === '/' ? 'Asosiy' : pathname === '/transactions' ? 'Amallar' : pathname === '/analytics' ? 'Hisobotlar' : 'Mablag';
+
     return (
         <header className="h-20 w-full flex items-center justify-between px-8 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40" >
             <div className="flex items-center gap-4 flex-1" >

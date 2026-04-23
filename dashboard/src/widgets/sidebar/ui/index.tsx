@@ -1,13 +1,14 @@
+"use client";
+
 import { menuItems } from "../lib/data";
 import { Plus, RefreshCcw } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-type Props = {
-  activeTab: string;
-  setActiveTab: (t: string) => void;
-};
+const Sidebar = () => {
+  const pathname = usePathname();
 
-const Sidebar = ({ activeTab, setActiveTab }: Props) => {
   return (
     <aside className="fixed left-0 top-0 flex flex-col py-8 px-4 w-64 h-screen border-r border-white/20 bg-white/60 backdrop-blur-xl elite-shadow z-50">
 
@@ -23,21 +24,24 @@ const Sidebar = ({ activeTab, setActiveTab }: Props) => {
 
       {/* Menu */}
       <nav className="flex-1 space-y-2">
-        {menuItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setActiveTab(item.id)}
-            className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200",
-              activeTab === item.id
-                ? "text-indigo-700 bg-indigo-50/50 shadow-sm border-r-4 border-indigo-600"
-                : "text-slate-500 hover:bg-slate-50"
-            )}
-          >
-            <item.icon size={20} />
-            <span>{item.label}</span>
-          </button>
-        ))}
+        {menuItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200",
+                isActive
+                  ? "text-indigo-700 bg-indigo-50/50 shadow-sm border-r-4 border-indigo-600"
+                  : "text-slate-500 hover:bg-slate-50"
+              )}
+            >
+              <item.icon size={20} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Bottom section */}
