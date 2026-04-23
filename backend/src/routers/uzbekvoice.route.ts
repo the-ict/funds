@@ -12,6 +12,7 @@ const storage = multer.diskStorage({
   },
   filename: (req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    console.log("file is saving...")
     cb(null, 'audio-' + uniqueSuffix + path.extname(file.originalname));
   },
 });

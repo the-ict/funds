@@ -10,11 +10,15 @@ interface MulterRequest extends Request {
 
 export const processVoiceInput = async (req: MulterRequest, res: Response) => {
   try {
+    console.log("processing voice input ....");
+
     if (!req.file) {
+      console.log("No audio file provided");
       return res.status(400).json({ error: 'No audio file provided' });
     }
 
     const { tg_id } = req.body;
+    console.log("tg_id: ", tg_id);
     if (!tg_id) {
       if (req.file.path) {
         fs.unlinkSync(req.file.path);
@@ -46,6 +50,7 @@ export const processVoiceInput = async (req: MulterRequest, res: Response) => {
     }
   } catch (error) {
     logger.error('Failed to process voice input', { error });
+    console.log(error);
     if (req.file && req.file.path && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
