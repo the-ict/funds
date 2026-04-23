@@ -122,7 +122,7 @@ export const confirmRegistrationHandler = () => async (ctx: BotContext) => {
 
   ctx.clearSession();
   await ctx.answerCbQuery("Tasdiqlandi ✅");
-  
+
   try {
     const userData = {
       name,
