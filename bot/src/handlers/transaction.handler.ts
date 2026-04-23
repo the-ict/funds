@@ -27,15 +27,16 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
 
   let loadingMessageId: number | null = null;
   if (userId) processingUsers.add(userId);
+  let backendResponse;
 
   try {
     const loadingMessage = await ctx.reply("⏳ Bajarilmoqda...");
     loadingMessageId = loadingMessage.message_id;
 
-    let backendResponse: Response;
+    const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
 
     if ("text" in ctx.message) {
-      backendResponse = await fetch("http://localhost:3000/text", {
+      backendResponse = await fetch(`${BACKEND_URL}/voice/text`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: ctx.message.text, tg_id: userId }),
@@ -50,7 +51,7 @@ export const transactionMessageHandler = (): MiddlewareFn<BotContext> => async (
       formData.append("audio", new Blob([buffer]), "voice.ogg");
       formData.append("tg_id", userId || "unknown");
 
-      backendResponse = await fetch("http://localhost:3000/voice", {
+      backendResponse = await fetch(`${BACKEND_URL}/voice`, {
         method: "POST",
         body: formData,
       });

@@ -33,6 +33,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/mydb?schema=public
       BOT_TOKEN: 8766157951:AAHAVcp21pB8GQwO7hNceEQemQdReskUFJ4
+      BACKEND_URL: http://backend:3000
     depends_on:
       db:
         condition: service_healthy

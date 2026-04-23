@@ -25,8 +25,7 @@ import {
   useAnalyticsBreakdown
 } from "@/shared/config/react-query/hooks";
 import { Skeleton } from "@/shared/ui/skeleton";
-import { EmptyState } from "@/shared/ui/empty-state";
-import { Plus } from "lucide-react";
+import { formatCurrency } from "@/shared/lib/utils";
 
 const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex flex-col gap-4">
@@ -39,8 +38,8 @@ const StatCard = ({ title, amount, percentage, isUp, icon: Icon, color }: any) =
       </div>
     </div>
     <div>
-      <p className="text-sm text-gray-500 font-medium">{title}</p>
-      <h3 className="text-2xl font-bold text-slate-800 mt-1">{amount} <span className="text-sm font-semibold">UZS</span></h3>
+      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{title}</p>
+      <h3 className="text-2xl font-bold text-slate-800">{formatCurrency(amount)}</h3>
     </div>
   </div>
 );
@@ -120,7 +119,7 @@ const Dashboard = () => {
 
           <div className="space-y-4 mt-6">
             {pieData.length === 0 ? (
-               <Skeleton className="w-full h-24" />
+              <Skeleton className="w-full h-24" />
             ) : (
               pieData.map((item) => (
                 <div key={item.name} className="flex justify-between items-center">
