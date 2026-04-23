@@ -1,4 +1,4 @@
-import logger from "../utils/loggers";
+import logger from "../utils/loggers.js";
 import dotenv from "dotenv";
 import axios from "axios";
 

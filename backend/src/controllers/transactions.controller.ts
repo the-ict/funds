@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { prisma } from '../lib/prisma';
-import type { AuthRequest } from '../middleware/auth.middleware';
+import { prisma } from '../lib/prisma.js';
+import type { AuthRequest } from '../middleware/auth.middleware.js';
 
 export const createTransaction = async (req: AuthRequest, res: Response) => {
   try {

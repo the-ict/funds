@@ -7,12 +7,12 @@ import morgan from "morgan";
 import cors from "cors";
 
 // routes
-import transactionsRouter from "./routers/transactions.route";
-import categoriesRouter from "./routers/categories.route";
-import uzbekVoiceRouter from "./routers/uzbekvoice.route";
-import usersRouter from "./routers/users.route";
-import authRouter from "./routers/auth.route";
-import analyticsRouter from "./routers/analytics.route";
+import transactionsRouter from "./routers/transactions.route.js";
+import categoriesRouter from "./routers/categories.route.js";
+import uzbekVoiceRouter from "./routers/uzbekvoice.route.js";
+import usersRouter from "./routers/users.route.js";
+import authRouter from "./routers/auth.route.js";
+import analyticsRouter from "./routers/analytics.route.js";
 
 // configure dotenv
 dotenv.config();
@@ -24,7 +24,7 @@ const app = express();
 app.use(helmet());
 app.use(morgan("combined"));
 app.use(cors({
-    origin: "http://localhost:5000",
+    origin: "http://localhost:3001",
 }));
 app.use(express.json());
 

@@ -6,9 +6,9 @@ import {
   updateUser,
   deleteUser,
   getUserByTgId
-} from '../controllers/users.controller';
-import { validateRequest } from '../middleware/validation.middleware';
-import { createUserSchema, updateUserSchema } from '../validators/users.validators';
+} from '../controllers/users.controller.js';
+import { validateRequest } from '../middleware/validation.middleware.js';
+import { createUserSchema, updateUserSchema } from '../validators/users.validators.js';
 
 const router = Router();
 

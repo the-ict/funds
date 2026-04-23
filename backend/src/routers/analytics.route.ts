@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getKPIs, getCashflowChart, getAnalyticsBreakdown } from '../controllers/analytics.controller';
+import { getKPIs, getCashflowChart, getAnalyticsBreakdown } from '../controllers/analytics.controller.js';
 
 const router = Router();
 

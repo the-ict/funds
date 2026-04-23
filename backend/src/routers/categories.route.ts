@@ -5,11 +5,14 @@ import {
   getCategoryById,
   updateCategory,
   deleteCategory,
-} from '../controllers/categories.controller';
-import { validateRequest } from '../middleware/validation.middleware';
-import { createCategorySchema, updateCategorySchema } from '../validators/categories.validators';
+} from '../controllers/categories.controller.js';
+import { validateRequest } from '../middleware/validation.middleware.js';
+import {
+  createCategorySchema,
+  updateCategorySchema
+} from '../validators/categories.validators.js';
 
-import { authMiddleware } from '../middleware/auth.middleware';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = Router();
 

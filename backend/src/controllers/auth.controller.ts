@@ -1,8 +1,8 @@
-import { generateAccessToken } from "../utils/jwt";
-import smsService from "../services/sms.service";
+import { generateAccessToken } from "../utils/jwt.js";
+import smsService from "../services/sms.service.js";
 import type { Request, Response, } from "express"
-import { prisma } from "../lib/prisma";
-import logger from "../utils/loggers";
+import { prisma } from "../lib/prisma.js";
+import logger from "../utils/loggers.js";
 
 export const login = async (req: Request, res: Response) => {
     try {

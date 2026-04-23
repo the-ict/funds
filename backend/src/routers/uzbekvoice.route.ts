@@ -1,4 +1,4 @@
-import { processTextInput, processVoiceInput } from '../controllers/uzbekvoice.controller';
+import { processTextInput, processVoiceInput } from '../controllers/uzbekvoice.controller.js';
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
