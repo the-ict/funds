@@ -1,7 +1,14 @@
 "use client"
 
-import React, { useState, useRef } from 'react';
-import { Shield, Info, Lock } from 'lucide-react';
+import React, {
+  useState,
+  useRef
+} from 'react';
+import {
+  Shield,
+  Info,
+  Lock
+} from 'lucide-react';
 
 const OTPVerification: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
