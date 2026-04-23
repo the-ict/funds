@@ -1,100 +1,69 @@
-"use client";
+import React, { useState } from 'react';
+import { MessageSquare } from 'lucide-react';
 
-import { useState } from "react";
-import {
-  useLogin,
-  useVerifyOTP
-} from "../../../shared/config/react-query/hooks";
-
-export default function LoginPage() {
-  const [step, setStep] = useState<"phone" | "otp">("phone");
-  const [phone, setPhone] = useState("");
-  const [code, setCode] = useState("");
-
-  const loginMutation = useLogin();
-  const verifyMutation = useVerifyOTP();
-
-  const handlePhoneSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    loginMutation.mutate({ phone }, {
-      onSuccess: () => {
-        setStep("otp");
-      },
-      onError: (err: any) => {
-        alert("Xatolik yuz berdi: " + err.message);
-      }
-    });
-  };
-
-  const handleVerifySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    verifyMutation.mutate({ phone, code }, {
-      onSuccess: () => {
-        alert("Tizimga muvaffaqiyatli kirdingiz!");
-        window.location.href = "/";
-      },
-      onError: (err: any) => {
-        alert("Xatolik yuz berdi: " + err.message);
-      }
-    });
-  };
+const LoginPage: React.FC = () => {
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 font-sans">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-bold text-slate-800 text-center mb-6">Tizimga kirish</h2>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
+      {/* Logo Placeholder */}
+      <div className="mb-8 w-12 h-12 bg-black rounded-lg flex items-center justify-center overflow-hidden">
+        <div className="text-orange-500 font-bold text-xl">M</div>
+      </div>
 
-        {step === "phone" ? (
-          <form onSubmit={handlePhoneSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Telefon raqam</label>
+      {/* Main Card */}
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
+        <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
+          Tizimga kirish
+        </h1>
+        <p className="text-gray-500 text-center text-sm mb-8 leading-relaxed">
+          Hisobingizga kirish uchun telefon raqamingizni kiriting
+        </p>
+
+        <form className="space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="phone" className="text-sm font-semibold text-gray-700">
+              Telefon raqami
+            </label>
+            <div className="flex border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all">
+              <span className="bg-gray-50 px-4 flex items-center text-gray-600 border-r border-gray-300 font-medium">
+                +998
+              </span>
               <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+998 90 123 45 67"
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-                required
+                type="tel"
+                id="phone"
+                placeholder="00 000 00 00"
+                className="w-full px-4 py-3 outline-none text-gray-800 placeholder-gray-300"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
-            <button
-              type="submit"
-              disabled={loginMutation.isPending}
-              className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-            >
-              {loginMutation.isPending ? "Yuborilmoqda..." : "Kodni yuborish"}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifySubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Tasdiqlash kodi</label>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="0000"
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-center tracking-widest text-lg font-bold"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={verifyMutation.isPending}
-              className="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 disabled:opacity-50 transition-colors"
-            >
-              {verifyMutation.isPending ? "Tasdiqlanmoqda..." : "Tasdiqlash"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep("phone")}
-              className="w-full text-indigo-600 font-semibold py-2 rounded-xl hover:bg-indigo-50 transition-colors text-sm"
-            >
-              Raqamni o'zgartirish
-            </button>
-          </form>
-        )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-[#2E3192] hover:bg-[#25287a] text-white font-semibold py-3 rounded-lg transition-colors duration-200"
+          >
+            Davom etish
+          </button>
+        </form>
+
+        {/* Bot Notification */}
+        <div className="mt-8 flex items-center justify-center gap-2 text-[13px]">
+          <MessageSquare size={16} className="text-green-500 fill-green-500" />
+          <p className="text-gray-400">
+            Tasdiqlash kodi <span className="text-green-500 font-medium cursor-pointer">@MablagBot</span> orqali yuboriladi
+          </p>
+        </div>
+      </div>
+
+      {/* Footer Links */}
+      <div className="mt-6 flex gap-6 text-sm text-gray-500">
+        <button className="hover:text-gray-800 transition-colors">Yordam kerakmi?</button>
+        <button className="hover:text-gray-800 transition-colors">Maxfiylik siyosati</button>
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;
