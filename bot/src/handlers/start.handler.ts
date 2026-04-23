@@ -36,6 +36,7 @@ export const startHandler = () => async (ctx: BotContext) => {
       );
     }
   } catch (error: any) {
+    console.log(error, "error start.handler.ts");
     if (error.response?.status === 404) {
       // User not found, proceed to registration
     } else {

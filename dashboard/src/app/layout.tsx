@@ -14,6 +14,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   const pathname = usePathname();
 
+
   if (pathname === "/login" || pathname === "/otp") {
     return (
       <html lang="uz">
