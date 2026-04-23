@@ -13,7 +13,7 @@ const StatsCard = ({ kpi, type }: { kpi: typeof mockKPIs[0], type: 'income' | 'e
             whileHover={{ y: -5 }}
             className={cn(
                 "glass-panel elite-shadow p-6 rounded-2xl relative overflow-hidden group",
-                isProfit && "bg-gradient-to-br from-indigo-600 to-violet-700 text-white border-none"
+                isProfit && "bg-linear-to-br from-indigo-600 to-violet-700 text-white border-none"
             )}
         >
             <div className="flex justify-between items-start mb-4">
