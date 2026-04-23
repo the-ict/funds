@@ -25,14 +25,14 @@ export const validationMiddleware = (): MiddlewareFn<BotContext> => async (ctx, 
 
   const state = ctx.state as Record<string, unknown>;
 
-  delete state.validatedName;
-  delete state.validatedPhone;
-  delete state.contactOwnerMismatch;
-  delete state.unsupportedPhoneInput;
+  // delete state.validatedName;
+  // delete state.validatedPhone;
+  // delete state.contactOwnerMismatch;
+  // delete state.unsupportedPhoneInput;
 
   if (ctx.session.step === "name" && ctx.message && "text" in ctx.message) {
     state.validatedName = validateFullName(ctx.message.text);
-  }
+  };
 
   if (ctx.session.step === "phone" && ctx.message) {
     let rawPhone: string | null = null;

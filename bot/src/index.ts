@@ -1,31 +1,47 @@
-import { validationMiddleware } from "./middlewares/validation.middleware";
-import { antiSpamMiddleware } from "./middlewares/anti-spam.middleware";
-import { sessionMiddleware } from "./middlewares/session.middleware";
-import { errorMiddleware } from "./middlewares/error.middleware";
-import { startHandler } from "./handlers/start.handler";
+import {
+  validationMiddleware
+} from "./middlewares/validation.middleware";
 import {
   confirmRegistrationHandler,
   registerMessageHandler,
   registrationActionData,
   restartRegistrationHandler,
 } from "./handlers/register.handler";
-import { transactionMessageHandler } from "./handlers/transaction.handler";
-import { BotContext } from "./types";
-import { Telegraf } from "telegraf";
+import {
+  transactionMessageHandler
+} from "./handlers/transaction.handler";
+import {
+  antiSpamMiddleware
+} from "./middlewares/anti-spam.middleware";
+import {
+  sessionMiddleware
+} from "./middlewares/session.middleware";
+import {
+  errorMiddleware
+} from "./middlewares/error.middleware";
+import {
+  startHandler
+} from "./handlers/start.handler";
+import {
+  BotContext
+} from "./types";
+import {
+  Telegraf
+} from "telegraf";
 import "dotenv/config";
 
 const botToken = process.env.BOT_TOKEN;
 
 if (!botToken) {
   throw new Error("BOT_TOKEN .env faylda berilmagan");
-}
+};
 
 const bot = new Telegraf<BotContext>(botToken);
 
-bot.use(validationMiddleware());
-bot.use(antiSpamMiddleware());
 bot.use(sessionMiddleware());
+bot.use(antiSpamMiddleware());
 bot.use(errorMiddleware());
+bot.use(validationMiddleware());
 
 bot.start(startHandler());
 bot.on(["text", "contact"], registerMessageHandler());

@@ -8,12 +8,13 @@ export const createUser = async (req: Request, res: Response) => {
       data: {
         name,
         tg_username,
-        tg_id,
+        tg_id: String(tg_id),
         phone,
       },
     });
     res.status(201).json(user);
   } catch (error) {
+    console.log(error, "error here");
     res.status(500).json({ error: 'Failed to create user' });
   }
 };

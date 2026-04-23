@@ -43,8 +43,6 @@ export const registerMessageHandler = () => async (ctx: BotContext) => {
       return;
     }
 
-    console.log("state: Just wanna see what state looks like", state);
-
     const name = state.validatedName;
     if (!name) {
       await ctx.reply('Ism kiritishda xatolik bor. Iltimos, to\'liq ism, familiya va otasining ismini kiriting.\n\n📝 Misol: "Abdulla Qosimov Umarali" yoki "Fatima Mirzaeva Rustamovna"');
@@ -132,7 +130,7 @@ export const confirmRegistrationHandler = () => async (ctx: BotContext) => {
     const userData = {
       name,
       phone,
-      tg_id: ctx.from.id,
+      tg_id: String(ctx.from.id),
       tg_username: ctx.from.username || null,
     };
 
